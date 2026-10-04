@@ -60,7 +60,12 @@ export interface ProductDetailPageCopy {
   thumbnailLabel: (index: number, total: number, alt: string) => string
   imageAnnouncement: (index: number, total: number) => string
   purchaseHeading: string
-  purchasePlaceholder: string
+  addToCart: string
+  addedToCart: (productName: string, quantity: number) => string
+  addLimited: (productName: string, added: number, max: number) => string
+  atLimit: (max: number) => string
+  inCart: (quantity: number) => string
+  goToCart: string
   outOfStockTitle: string
   outOfStockText: string
   detailsHeading: string
@@ -68,6 +73,38 @@ export interface ProductDetailPageCopy {
   specLabels: Record<keyof ProductSpecs, string>
   handmadeNote: string
   relatedHeading: string
+}
+
+export interface CartPageCopy {
+  title: string
+  emptyTitle: string
+  emptyText: string
+  browseProducts: string
+  itemsHeading: string
+  itemCount: (count: number) => string
+  unitPrice: string
+  lineTotal: string
+  quantityLabel: (productName: string) => string
+  remove: string
+  removeLabel: (productName: string) => string
+  summaryHeading: string
+  subtotal: string
+  shipping: string
+  freeShipping: string
+  total: string
+  freeShippingRemaining: (amount: string) => string
+  freeShippingEarned: string
+  freeShippingRule: (threshold: string, fee: string) => string
+  checkout: string
+  continueShopping: string
+  clearCart: string
+  clearConfirmTitle: string
+  clearConfirmText: string
+  clearConfirm: string
+  clearCancel: string
+  announceTotals: (subtotal: string, shipping: string, total: string) => string
+  announceRemoved: (productName: string) => string
+  announceCleared: string
 }
 
 export interface SiteContent {
@@ -99,6 +136,16 @@ export interface SiteContent {
   a11y: {
     skipToContent: string
   }
+  quantity: {
+    label: string
+    decrease: string
+    increase: string
+    range: (min: number, max: number) => string
+  }
+  cartNotice: {
+    message: string
+    dismiss: string
+  }
   pageTitle: (pageTitle: string) => string
   /** index.html'deki açıklama ile aynı; ürün dışı sayfalarda kullanılır. */
   defaultMetaDescription: string
@@ -106,7 +153,7 @@ export interface SiteContent {
     home: PageCopy
     products: ProductsPageCopy
     productDetail: ProductDetailPageCopy
-    cart: PageCopy
+    cart: CartPageCopy
     checkout: PageCopy
     notFound: PageCopy & {
       backHome: string

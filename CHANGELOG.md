@@ -6,10 +6,22 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 
 ### Eklendi
 
+- Sepet (Yol haritası adım 5):
+  - Saf sepet işlevleri: ekleme, adet belirleme, çıkarma, boşaltma. Ürün başına 1–10 adet; tükenen ve bilinmeyen ürün eklenemez.
+  - Kuruş cinsinden hesaplar: satır toplamı, ara toplam, kargo, genel toplam, toplam adet.
+  - Kargo kuralı ve adet sınırları tek yapılandırma dosyasında (`src/config/shop.ts`): ₺75 kargo, ₺1.500 ve üzeri ücretsiz.
+- Sepetin kalıcı saklanması: `toprana.sepet` anahtarı, sürüm 1. Okurken doğrulama, geçersiz kayıtları ayıklama ve sınıra çekme; kullanıcıya bilgi ve loga uyarı. Depolama yoksa bellekte çalışma; sekmeler arası eşitleme.
+- Sepet durumunu paylaşan `CartProvider`; ayrı okuma (`useCart`) ve değiştirme (`useCartActions`) kancaları.
+- Ürün detayında adet seçimi ve "Sepete ekle": duyurulan onay, "Sepete git" bağlantısı, 10 adet sınırı bildirimi.
+- Header'da toplam adet rozeti; bağlantının erişilebilir adı adedi de söyler.
+- Sepet sayfası:
+  - satırlar, adet seçimi, "Çıkar" ve özet (ara toplam, kargo, genel toplam, ücretsiz kargo bilgisi);
+  - "Siparişi tamamla", "Alışverişe devam et" ve onaylı "Sepeti boşalt";
+  - boş durum, ekran okuyucu duyuruları ve çıkarma sonrası odak yönetimi.
+- Sepet işlemleri, saklama/doğrulama ve sepet deposu için birim testleri.
 - Ürün detay sayfası (Yol haritası adım 4): yol göstergesi (kategori bağlantısı filtreli Ürünler sayfasını açar), fare, dokunma ve klavyeyle kullanılan görsel galerisi, ad, kategori, fiyat, metin ve simgeli stok durumu, kısa açıklama, ileride sepet için ayrılmış alan ("Tükendi" bilgisi dahil), uzun açıklama, el yapımı notu, özellikler listesi ve aynı kategoriden benzer ürünler.
 - Sayfaya göre güncellenen açıklama meta etiketi (`usePageMeta`); ürün detayında ürünün kısa açıklaması kullanılır.
 - `getRelatedProducts` ve `productsPathForCategory` saf işlevleri ile galeri bileşeni için birim testleri.
-
 - Ürün ve kategori verisi (`src/content/catalog.ts`): 4 kategoride 12 kurgusal ürün; sabit id, slug, kuruş cinsinden fiyat, açıklamalar, özellikler, stok durumu, alt metinli görseller, öne çıkan işareti ve eklenme tarihi (Yol haritası adım 3).
 - 24 özgün SVG ürün illüstrasyonu (`public/images/urunler`) ve bunları üreten betik (`scripts/generate-product-images.mjs`).
 - Saf yardımcı işlevler (`src/lib`): kuruşu ₺ biçiminde gösterme, Türkçe karakter ve büyük/küçük harf duyarsız arama, filtreleme, sıralama, adres parametrelerini okuma/yazma.
@@ -30,5 +42,10 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 
 ### Değişti
 
+- `Header`: sabit 0 yerine sepetteki toplam adet kullanılır.
+- `RootLayout`: içerik alanının başına kayıtlı sepet düzeltildiğinde gösterilen bilgi alanı (`CartNotice`) eklendi.
+- `main.tsx`: uygulama `CartProvider` ile sarıldı.
+- Ürün detayındaki satın alma yer tutucusu kaldırıldı; yerine adet seçimi ve "Sepete ekle" geldi.
+- `PROJE.md` mimari kararında "sürüm numaralı anahtar" ifadesi, uygulanan yapıya göre "sabit anahtar ve içinde sürüm alanı" olarak netleştirildi.
 - `usePageTitle` kancası, açıklama meta etiketini de yönettiği için `usePageMeta` olarak yeniden adlandırıldı.
 - `ProductCard` bileşenine başlık düzeyi seçeneği eklendi; benzer ürünlerde başlık sırası bozulmasın diye `h3` kullanılır. Ürünler sayfasındaki görünüm değişmedi.

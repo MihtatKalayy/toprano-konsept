@@ -1,10 +1,8 @@
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
+import { useCart } from '../../cart/useCart'
 import { site } from '../../content/site'
 import { paths } from '../../routes/paths'
-
-// Gerçek sepet mantığı sonraki adımda eklenecek; o zamana kadar sepet boş kabul edilir.
-const cartCount = 0
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
@@ -20,6 +18,7 @@ export function Header() {
   const menuId = useId()
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const { header, nav, brand } = site
+  const cartCount = useCart().summary.itemCount
 
   const closeMenu = () => setMenuOpenAt(null)
 

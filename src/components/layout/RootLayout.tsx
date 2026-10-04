@@ -1,6 +1,7 @@
 import { useRef, type MouseEvent } from 'react'
 import { Outlet, ScrollRestoration } from 'react-router'
 import { site } from '../../content/site'
+import { CartNotice } from '../cart/CartNotice'
 import { Footer } from './Footer'
 import { Header } from './Header'
 
@@ -27,6 +28,7 @@ export function RootLayout() {
       </a>
       <Header />
       <main id={mainId} ref={mainRef} tabIndex={-1} className="flex-1 scroll-mt-16 focus:outline-none">
+        <CartNotice />
         <Outlet />
       </main>
       <Footer />

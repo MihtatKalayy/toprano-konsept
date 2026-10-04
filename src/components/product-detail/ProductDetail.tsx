@@ -7,6 +7,7 @@ import { formatPrice } from '../../lib/money'
 import { productsPathForCategory } from '../../lib/productQuery'
 import { paths } from '../../routes/paths'
 import { ProductCard } from '../products/ProductCard'
+import { AddToCart } from './AddToCart'
 import { Breadcrumb, type Crumb } from './Breadcrumb'
 import { ProductGallery } from './ProductGallery'
 import { StockStatus } from './StockStatus'
@@ -57,10 +58,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 <p className="mt-1 text-krem-200">{copy.outOfStockText}</p>
               </div>
             ) : (
-              // Sepet adımında adet seçimi ve "Sepete ekle" butonu bu alana gelecek.
-              <p className="rounded-lg border border-dashed border-antrasit-600 px-5 py-4 text-antrasit-700">
-                {copy.purchasePlaceholder}
-              </p>
+              <AddToCart product={product} />
             )}
           </section>
         </div>
