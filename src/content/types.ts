@@ -99,6 +99,10 @@ export interface SiteContent {
   a11y: {
     skipToContent: string
   }
+  cartNotice: {
+    message: string
+    dismiss: string
+  }
   pageTitle: (pageTitle: string) => string
   /** index.html'deki açıklama ile aynı; ürün dışı sayfalarda kullanılır. */
   defaultMetaDescription: string

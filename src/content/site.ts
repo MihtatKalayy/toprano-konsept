@@ -45,6 +45,10 @@ export const site: SiteContent = {
   a11y: {
     skipToContent: 'İçeriğe geç',
   },
+  cartNotice: {
+    message: 'Kayıtlı sepetinizdeki bazı ürünler artık mevcut olmadığı ya da geçersiz olduğu için sepetiniz güncellendi.',
+    dismiss: 'Bilgiyi kapat',
+  },
   pageTitle: (pageTitle) => `${pageTitle} | ${brandName}`,
   defaultMetaDescription: `${brandName}, el yapımı seramikler satan kurgusal bir atölyenin online mağazası. Bu site bir konsept çalışmadır; gerçek satış yapılmaz.`,
   pages: {
