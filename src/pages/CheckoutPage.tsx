@@ -10,7 +10,7 @@ import { paths } from '../routes/paths'
 const copy = site.pages.checkout
 
 export function CheckoutPage() {
-  usePageMeta(copy.title)
+  usePageMeta(copy.title, copy.metaDescription, { noindex: true })
   const { lines, summary } = useCart()
   const navigate = useNavigate()
 

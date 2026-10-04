@@ -10,7 +10,7 @@ import { paths } from '../routes/paths'
 const copy = site.pages.checkout.confirmation
 
 export function CheckoutConfirmationPage() {
-  usePageMeta(copy.title)
+  usePageMeta(copy.title, copy.metaDescription, { noindex: true })
   // Onay bellekten bir kez okunur. Yenilemede ya da adres doğrudan açıldığında bulunmaz ve ana sayfaya yönlenilir.
   const [confirmation] = useState(peekConfirmation)
   const { clear } = useCartActions()

@@ -56,7 +56,6 @@ export const site: SiteContent = {
     dismiss: 'Bilgiyi kapat',
   },
   pageTitle: (pageTitle) => `${pageTitle} | ${brandName}`,
-  defaultMetaDescription: `${brandName}, el yapımı seramikler satan kurgusal bir atölyenin online mağazası. Bu site bir konsept çalışmadır; gerçek satış yapılmaz.`,
   pages: {
     home: {
       title: 'El yapımı seramik atölyesi',
@@ -139,6 +138,7 @@ export const site: SiteContent = {
     },
     products: {
       title: 'Ürünler',
+      metaDescription: `${brandName} el yapımı seramikleri: kupa ve fincanlar, tabak ve kaseler, vazolar ve dekor objeleri. Kategori, fiyat ve aramayla filtreleyin. Konsept çalışmadır; gerçek satış yapılmaz.`,
       intro: 'Atölyede tek tek elde şekillendirilen kupa, tabak, vazo ve dekor objeleri.',
       filtersHeading: 'Filtreler',
       filtersToggle: (activeCount) => (activeCount > 0 ? `Filtreler (${activeCount})` : 'Filtreler'),
@@ -204,6 +204,7 @@ export const site: SiteContent = {
     },
     cart: {
       title: 'Sepet',
+      metaDescription: `${brandName} sepetiniz: ürünler, adetler, kargo ve genel toplam. Konsept çalışmadır; gerçek satış yapılmaz.`,
       emptyTitle: 'Sepetiniz boş',
       emptyText: 'Atölyenin kupa, tabak, vazo ve dekor objelerine göz atarak başlayabilirsiniz.',
       browseProducts: 'Ürünlere göz at',
@@ -236,6 +237,7 @@ export const site: SiteContent = {
     },
     checkout: {
       title: 'Sipariş',
+      metaDescription: `${brandName} sipariş adımı: teslimat bilgileri ve sipariş özeti. Konsept çalışmadır; bilgiler gönderilmez, ödeme alınmaz.`,
       conceptNotice:
         'Bu site bir konsept çalışmadır. Gerçek sipariş oluşturulmaz, ödeme alınmaz; girdiğiniz bilgiler hiçbir yere gönderilmez ve kaydedilmez.',
       deliveryHeading: 'Teslimat bilgileri',
@@ -310,6 +312,7 @@ export const site: SiteContent = {
       },
       confirmation: {
         title: 'Sipariş onayı',
+        metaDescription: `${brandName} sipariş onayı. Konsept çalışmadır; gerçek sipariş oluşturulmaz.`,
         heading: 'Teşekkürler!',
         conceptNote:
           'Bu site bir konsept çalışma olduğu için gerçek bir sipariş oluşturulmadı ve ödeme alınmadı. Girdiğiniz bilgiler hiçbir yere gönderilmedi ve kaydedilmedi; sepetiniz boşaltıldı.',
@@ -319,7 +322,8 @@ export const site: SiteContent = {
     },
     notFound: {
       title: 'Sayfa bulunamadı',
-      placeholder: 'Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir.',
+      metaDescription: `Aradığınız sayfa ${brandName} konsept mağazasında bulunamadı.`,
+      description: 'Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir.',
       backHome: 'Ana sayfaya dön',
     },
   },
