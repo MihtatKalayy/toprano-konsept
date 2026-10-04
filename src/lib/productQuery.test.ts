@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { categories } from '../content/catalog'
 import { defaultSort } from './catalog'
-import { parseProductQuery, toSearchParams } from './productQuery'
+import { parseProductQuery, productsPathForCategory, toSearchParams } from './productQuery'
 
 const parse = (search: string) => parseProductQuery(new URLSearchParams(search), categories)
 
@@ -52,5 +52,18 @@ describe('toSearchParams', () => {
     const roundTrip = toSearchParams(parse(search), categories)
     expect(parse(roundTrip.toString())).toEqual(parse(search))
     expect(roundTrip.getAll('kategori')).toEqual(['kupa-fincan', 'vazo'])
+  })
+})
+
+describe('productsPathForCategory', () => {
+  it('kategori filtreli Ürünler adresini üretir', () => {
+    expect(productsPathForCategory(categories[2], categories)).toBe('/urunler?kategori=vazo')
+  })
+
+  it('üretilen adres aynı kategoriyle geri okunur', () => {
+    for (const category of categories) {
+      const search = productsPathForCategory(category, categories).split('?')[1]
+      expect(parseProductQuery(new URLSearchParams(search), categories).categoryIds).toEqual([category.id])
+    }
   })
 })

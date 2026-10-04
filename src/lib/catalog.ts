@@ -67,3 +67,12 @@ export function findProductBySlug(products: Product[], slug: string): Product | 
 export function findCategory(categories: Category[], id: CategoryId): Category | undefined {
   return categories.find((category) => category.id === id)
 }
+
+/**
+ * Detay sayfasındaki benzer ürünler: aynı kategoriden, ürünün kendisi hariç,
+ * önerilen sırayla en fazla `limit` ürün. Eşleştirme id ile yapılır.
+ */
+export function getRelatedProducts(products: Product[], product: Product, limit = 4): Product[] {
+  const sameCategory = products.filter((other) => other.categoryId === product.categoryId && other.id !== product.id)
+  return sortProducts(sameCategory, 'onerilen').slice(0, limit)
+}

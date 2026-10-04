@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { categories, products } from '../content/catalog'
 import type { Product } from '../content/types'
-import { emptyFilters, filterProducts, findProductBySlug, hasActiveFilters, queryProducts, sortProducts } from './catalog'
+import {
+  emptyFilters,
+  filterProducts,
+  findProductBySlug,
+  getRelatedProducts,
+  hasActiveFilters,
+  queryProducts,
+  sortProducts,
+} from './catalog'
 
 const ids = (list: Product[]) => list.map((product) => product.id)
 const filter = (overrides: Partial<typeof emptyFilters>) => filterProducts(products, categories, { ...emptyFilters, ...overrides })
@@ -99,5 +107,36 @@ describe('queryProducts ve yardımcılar', () => {
   it('findProductBySlug', () => {
     expect(findProductBySlug(products, 'tek-dal-vazo')?.id).toBe('p-008')
     expect(findProductBySlug(products, 'olmayan')).toBeUndefined()
+  })
+})
+
+describe('getRelatedProducts', () => {
+  const product = (id: string) => products.find((item) => item.id === id)!
+
+  it('aynı kategoriden, ürünün kendisi hariç ürünleri döndürür', () => {
+    const related = getRelatedProducts(products, product('p-008'))
+    expect(ids(related)).toEqual(['p-007', 'p-009'])
+    expect(related.every((item) => item.categoryId === 'cat-vazo')).toBe(true)
+  })
+
+  it('her ürün için kendisini içermez', () => {
+    for (const item of products) {
+      expect(ids(getRelatedProducts(products, item))).not.toContain(item.id)
+    }
+  })
+
+  it('en fazla limit kadar ürün döndürür ve öne çıkanı öne alır', () => {
+    const base = product('p-001')
+    const extra: Product[] = [2, 3, 4, 5].map((n) => ({ ...base, id: `x-${n}`, slug: `x-${n}`, featured: n === 5 }))
+    const related = getRelatedProducts([...products, ...extra], base)
+    expect(related).toHaveLength(4)
+    expect(related[0].id).toBe('x-5')
+    expect(getRelatedProducts(products, base, 1)).toHaveLength(1)
+  })
+
+  it('eşleştirmeyi id ile yapar; aynı ada sahip farklı ürünü dışlamaz', () => {
+    const base = product('p-001')
+    const twin = { ...base, id: 'p-999', slug: 'ikiz' }
+    expect(ids(getRelatedProducts([...products, twin], base))).toContain('p-999')
   })
 })

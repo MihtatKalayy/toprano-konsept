@@ -1,5 +1,6 @@
 import type { Category } from '../content/types'
-import { defaultSort, sortOptions, type ProductQuery, type SortOption } from './catalog'
+import { paths } from '../routes/paths'
+import { defaultSort, emptyFilters, sortOptions, type ProductQuery, type SortOption } from './catalog'
 import { kurusToWholeLira, liraToKurus } from './money'
 
 // Ürünler sayfasının adres çubuğundaki sorgu parametreleri.
@@ -61,4 +62,10 @@ export function toSearchParams(query: ProductQuery, categories: Category[]): URL
   if (query.search.trim() !== '') params.set(queryKeys.search, query.search)
   if (query.sort !== defaultSort) params.set(queryKeys.sort, query.sort)
   return params
+}
+
+/** Ürünler sayfasının yalnızca verilen kategoriyle filtrelenmiş adresi, örn. "/urunler?kategori=vazo". */
+export function productsPathForCategory(category: Category, categories: Category[]): string {
+  const params = toSearchParams({ ...emptyFilters, categoryIds: [category.id], sort: defaultSort }, categories)
+  return `${paths.products}?${params.toString()}`
 }
