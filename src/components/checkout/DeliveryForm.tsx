@@ -220,26 +220,23 @@ export function DeliveryForm({ onValidSubmit }: DeliveryFormProps) {
           {copy.consentHeading}
         </h2>
         <p className="mt-1 text-antrasit-900">{copy.consentText}</p>
-        <div className="mt-3 flex items-start gap-3">
+        {/* Etiket kutuyu sarar; dokunma alanı satırın tamamıdır (en az 44 px). */}
+        <label htmlFor={idOf('consent')} className="mt-3 flex min-h-11 cursor-pointer items-center gap-3 font-semibold">
           <input
             {...register('consent')}
             type="checkbox"
             required
             checked={values.consent}
             onChange={(event) => set('consent', event.target.checked)}
-            className="mt-0.5 size-6 shrink-0 accent-vurgu"
+            className="size-6 shrink-0 accent-vurgu"
           />
-          <div>
-            <label htmlFor={idOf('consent')} className="font-semibold">
-              {copy.fields.consent.label}
-            </label>
-            {errors.consent && (
-              <p id={errorIdOf('consent')} className="mt-1 text-sm font-semibold text-kiremit-800">
-                {copy.fields.consent.errors.required}
-              </p>
-            )}
-          </div>
-        </div>
+          {copy.fields.consent.label}
+        </label>
+        {errors.consent && (
+          <p id={errorIdOf('consent')} className="mt-1 ml-9 text-sm font-semibold text-kiremit-800">
+            {copy.fields.consent.errors.required}
+          </p>
+        )}
       </section>
 
       <section aria-labelledby={`${baseId}-odeme-baslik`} className="rounded-lg border border-dashed border-antrasit-600 p-4">

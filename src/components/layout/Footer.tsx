@@ -25,7 +25,7 @@ export function Footer() {
               <li key={link.id}>
                 <Link
                   to={link.to}
-                  className="inline-flex min-h-11 items-center text-krem-200 underline-offset-4 transition-colors hover:text-kiremit-300 hover:underline"
+                  className="inline-flex min-h-11 min-w-11 items-center text-krem-200 underline-offset-4 transition-colors hover:text-kiremit-300 hover:underline"
                 >
                   {link.label}
                 </Link>

@@ -19,7 +19,7 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
               </svg>
             )}
             {item.to ? (
-              <Link to={item.to} className="inline-flex min-h-11 items-center text-kiremit-700 underline underline-offset-4 hover:text-kiremit-800">
+              <Link to={item.to} className="inline-flex min-h-11 min-w-11 items-center text-kiremit-700 underline underline-offset-4 hover:text-kiremit-800">
                 {item.label}
               </Link>
             ) : (
