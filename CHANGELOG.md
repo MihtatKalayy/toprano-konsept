@@ -6,6 +6,16 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 
 ### Eklendi
 
+- Ana sayfa (Yol haritası adım 6):
+  - hero (başlık, metin, "Ürünleri keşfet", öncelikli yüklenen illüstrasyon);
+  - ürün kaynağından gelen 4 kategori kartı (filtreli Ürünler sayfasına gider);
+  - öne çıkan ürünler ve "Tüm ürünleri gör";
+  - atölye hikâyesi ve üretimin üç adımı;
+  - kargo bilgisi sepet yapılandırmasından okunan değerler şeridi;
+  - kapanış çağrısı;
+  - ana sayfaya özel sekme başlığı ve açıklama meta etiketi.
+- `getFeaturedProducts` ve `getCategoryShowcase` saf işlevleri ve birim testleri.
+- 4 özgün SVG ana sayfa illüstrasyonu (`public/images/ana-sayfa`) ve bunları üreten betik (`scripts/generate-home-images.mjs`).
 - Sepet (Yol haritası adım 5):
   - Saf sepet işlevleri: ekleme, adet belirleme, çıkarma, boşaltma. Ürün başına 1–10 adet; tükenen ve bilinmeyen ürün eklenemez.
   - Kuruş cinsinden hesaplar: satır toplamı, ara toplam, kargo, genel toplam, toplam adet.
@@ -42,6 +52,8 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 
 ### Değişti
 
+- İllüstrasyon betiği ortak tarz (`scripts/illustration-style.mjs`) ve ürün çizimleri (`scripts/product-drawings.mjs`) olarak ayrıldı; ürün görsellerinin çıktısı bayt bayt aynı kaldı.
+- Ana sayfa yer tutucusu ve ona ait içerik metni kaldırıldı.
 - `Header`: sabit 0 yerine sepetteki toplam adet kullanılır.
 - `RootLayout`: içerik alanının başına kayıtlı sepet düzeltildiğinde gösterilen bilgi alanı (`CartNotice`) eklendi.
 - `main.tsx`: uygulama `CartProvider` ile sarıldı.
