@@ -75,6 +75,38 @@ export interface ProductDetailPageCopy {
   relatedHeading: string
 }
 
+export interface CartPageCopy {
+  title: string
+  emptyTitle: string
+  emptyText: string
+  browseProducts: string
+  itemsHeading: string
+  itemCount: (count: number) => string
+  unitPrice: string
+  lineTotal: string
+  quantityLabel: (productName: string) => string
+  remove: string
+  removeLabel: (productName: string) => string
+  summaryHeading: string
+  subtotal: string
+  shipping: string
+  freeShipping: string
+  total: string
+  freeShippingRemaining: (amount: string) => string
+  freeShippingEarned: string
+  freeShippingRule: (threshold: string, fee: string) => string
+  checkout: string
+  continueShopping: string
+  clearCart: string
+  clearConfirmTitle: string
+  clearConfirmText: string
+  clearConfirm: string
+  clearCancel: string
+  announceTotals: (subtotal: string, shipping: string, total: string) => string
+  announceRemoved: (productName: string) => string
+  announceCleared: string
+}
+
 export interface SiteContent {
   brand: {
     name: string
@@ -121,7 +153,7 @@ export interface SiteContent {
     home: PageCopy
     products: ProductsPageCopy
     productDetail: ProductDetailPageCopy
-    cart: PageCopy
+    cart: CartPageCopy
     checkout: PageCopy
     notFound: PageCopy & {
       backHome: string
