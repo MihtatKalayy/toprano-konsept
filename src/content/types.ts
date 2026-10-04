@@ -1,3 +1,5 @@
+import type { SortOption } from '../lib/catalog'
+
 export type NavItemId = 'home' | 'products'
 
 export interface NavItem {
@@ -21,6 +23,32 @@ export interface ContactInfo {
 export interface PageCopy {
   title: string
   placeholder: string
+}
+
+export interface ProductsPageCopy {
+  title: string
+  intro: string
+  filtersHeading: string
+  filtersToggle: (activeCount: number) => string
+  categoryLegend: string
+  priceLegend: string
+  minPriceLabel: string
+  maxPriceLabel: string
+  applyPrice: string
+  searchLabel: string
+  searchPlaceholder: string
+  sortLabel: string
+  sortOptions: Record<SortOption, string>
+  resultCount: (count: number) => string
+  activeFiltersLabel: string
+  minPriceChip: (price: string) => string
+  maxPriceChip: (price: string) => string
+  searchChip: (search: string) => string
+  removeFilter: (label: string) => string
+  clearFilters: string
+  emptyTitle: string
+  emptyText: string
+  stockLabels: Record<StockStatus, string>
 }
 
 export interface SiteContent {
@@ -55,7 +83,7 @@ export interface SiteContent {
   pageTitle: (pageTitle: string) => string
   pages: {
     home: PageCopy
-    products: PageCopy
+    products: ProductsPageCopy
     productDetail: {
       placeholder: string
     }
