@@ -169,7 +169,7 @@ Kategori id'leri: `cat-kupa-fincan`, `cat-tabak-kase`, `cat-vazo`, `cat-dekor`. 
 - Görseller `scripts/generate-product-images.mjs` ile üretilir (`node scripts/generate-product-images.mjs`). Her ürün için iki görsel vardır: `-1.svg` genel görünüm, `-2.svg` yakın görünüm. Görsel değişirse dosya adı da değiştirilmeli; `/images` altı uzun süre önbelleğe alınabilir.
 - Her görselin `width`/`height` değeri (800 × 800) veride tutulur ve `<img>` etiketine yazılır; kart görsel alanı `aspect-square` olduğu için yüklenirken düzen kaymaz.
 - Ürün listesinde ilk 2 kartın görseli hemen, diğerleri tembel (`loading="lazy"`) ve `decoding="async"` ile yüklenir.
-- Her görselin veride açıklayıcı bir alt metni vardır. Ürün kartında ad zaten yazılı olduğundan görsel orada süs niteliğindedir (`alt=""`); alt metinler ürün detay sayfasında kullanılacak.
+- Her görselin veride açıklayıcı bir alt metni vardır. Ürün kartında ad zaten yazılı olduğundan görsel orada süs niteliğindedir (`alt=""`); alt metinler ürün detay sayfasının galerisinde kullanılır.
 
 | Görsel | Kullanıldığı yer | Kaynak | Lisans |
 | ------ | ---------------- | ------ | ------ |
@@ -257,7 +257,18 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
 | `/siparis` | Sipariş |
 | Diğer tüm adresler | 404 — Sayfa bulunamadı |
 
-- Sayfa değişince görünüm en üste kayar (geri/ileri gezinmede önceki konum korunur) ve sekme başlığı `Sayfa adı | Toprana` biçiminde güncellenir.
+- Sayfa değişince görünüm en üste kayar (geri/ileri gezinmede önceki konum korunur), sekme başlığı `Sayfa adı | Toprana` biçiminde ve açıklama meta etiketi sayfaya göre güncellenir (`usePageMeta`). Ürün detayında başlık ürün adı, açıklama ürünün kısa açıklamasıdır; diğer sayfalarda `index.html` ile aynı varsayılan açıklama kullanılır.
+### Ürün detayı sayfası
+
+- Ürün adresteki slug ile bulunur; sayfa içindeki tüm eşleştirmeler (kategori, benzer ürünler) id ile yapılır. Slug veride yoksa 404 görünümü ve başlığı gösterilir.
+- Yerleşim: `md` (768 px) ve üstünde solda galeri, sağda ürün bilgileri; daha dar ekranlarda önce galeri, altında bilgiler.
+- Yol göstergesi: Ana sayfa › Ürünler › Kategori › Ürün adı. Kategori bağlantısı Ürünler sayfasını o kategoriyle filtreli açar (örn. `/urunler?kategori=vazo`).
+- Galeri: ana görsel öncelikli yüklenir (`fetchpriority="high"`, boyutlu, kare alan). Küçük görseller fare, dokunma ve klavyeyle seçilir. Klavyede şerit tek sekme durağıdır; oklar, Home ve End ile gezinilir. Seçili görsel çerçeveyle ve `aria-current` ile belirtilir, değişim ekran okuyucuya duyurulur. Üründe tek görsel varsa şerit gösterilmez.
+- Stok durumu her zaman metin ve simgeyle gösterilir; renk tek başına bilgi taşımaz.
+- Satın alma alanı: adet seçimi ve "Sepete ekle" butonu Sepet adımında gelecek. Şimdilik bu alanda yalnızca bilgi notu var, çalışmayan buton yok. Tükenen üründe bu alanda "Tükendi" kutusu görünür.
+- Ayrıntılar: uzun açıklama, el yapımı ürünlerdeki küçük farklılıklara dair not ve özellikler listesi (ölçü, hacim, ağırlık, bakım).
+- Benzer ürünler: aynı kategoriden, ürünün kendisi hariç, önerilen sırayla en fazla 4 ürün (`getRelatedProducts`). Kart bileşeni Ürünler sayfasıyla ortaktır. Her kategoride 3 ürün olduğundan şu an her detayda 2 benzer ürün görünür.
+
 ### Ürünler sayfası sorgu parametreleri
 
 | Parametre | Değer | Örnek |
@@ -298,8 +309,9 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
     ├── components/
     │   ├── layout/          # RootLayout, Header, Footer
     │   ├── products/        # ProductCard, StockBadge, FilterPanel, ProductToolbar, ActiveFilters
+    │   ├── product-detail/  # ProductDetail, ProductGallery, StockStatus, Breadcrumb
     │   └── PagePlaceholder.tsx
-    ├── hooks/               # usePageTitle, useProductQuery
+    ├── hooks/               # usePageMeta, useProductQuery
     ├── pages/               # Her adres için bir sayfa bileşeni
     └── styles/index.css     # Tailwind teması: tasarım belirteçleri ve @font-face
 ```
