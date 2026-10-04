@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+/*
+ * Fontlar kendi sunucumuzdan (public/fonts) yüklenir. Her aile iki dosyadan oluşur:
+ * Latin temel set ve yalnızca Türkçeye özgü harfleri (Ğ ğ İ Ş ş) ile ₺ işaretini içeren küçük bir ek.
+ * Lisans: SIL Open Font License 1.1 (public/fonts/OFL-*.txt).
+ */
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/fraunces-latin-wght.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/fraunces-tr-wght.woff2') format('woff2');
+  unicode-range: U+011E-011F, U+0130, U+015E-015F, U+20BA;
+}
+
+@font-face {
+  font-family: 'Source Sans 3 Variable';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/source-sans-3-latin-wght.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Source Sans 3 Variable';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/source-sans-3-tr-wght.woff2') format('woff2');
+  unicode-range: U+011E-011F, U+0130, U+015E-015F, U+20BA;
+}
+
+/*
+ * Tasarım belirteçleri. Tüm renkler, fontlar ve gölgeler yalnızca burada tanımlanır.
+ * Kontrast oranları PROJE.md > Tasarım Sistemi bölümünde listelenmiştir.
+ */
+@theme {
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: 'Source Sans 3 Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, sans-serif;
+
+  /* Ana renk: kiremit */
+  --color-kiremit-50: #fbf0ea;
+  --color-kiremit-100: #f4dccf;
+  --color-kiremit-300: #de9f80;
+  --color-kiremit-500: #c2603a;
+  --color-kiremit-600: #a84e2c;
+  --color-kiremit-700: #8e3f23;
+  --color-kiremit-800: #6e301b;
+
+  /* Zeminler */
+  --color-krem: #f7f1e6;
+  --color-krem-200: #ede3d1;
+  --color-notr: #fbfaf8;
+
+  /* Metin: antrasit */
+  --color-antrasit-600: #50565d;
+  --color-antrasit-700: #3a4046;
+  --color-antrasit-900: #24282c;
+
+  /* Tek vurgu: önemli çağrılar ve butonlar */
+  --color-vurgu: var(--color-kiremit-600);
+  --color-vurgu-hover: var(--color-kiremit-700);
+  --color-vurgu-metin: #ffffff;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-krem font-sans text-antrasit-900 antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-antrasit-900;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-vurgu;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
