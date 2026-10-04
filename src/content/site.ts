@@ -45,6 +45,12 @@ export const site: SiteContent = {
   a11y: {
     skipToContent: 'İçeriğe geç',
   },
+  quantity: {
+    label: 'Adet',
+    decrease: 'Adedi azalt',
+    increase: 'Adedi artır',
+    range: (min, max) => `${min} ile ${max} arasında`,
+  },
   cartNotice: {
     message: 'Kayıtlı sepetinizdeki bazı ürünler artık mevcut olmadığı ya da geçersiz olduğu için sepetiniz güncellendi.',
     dismiss: 'Bilgiyi kapat',
@@ -100,7 +106,13 @@ export const site: SiteContent = {
       thumbnailLabel: (index, total, alt) => `Görsel ${index} / ${total}: ${alt}`,
       imageAnnouncement: (index, total) => `Görsel ${index} / ${total} gösteriliyor`,
       purchaseHeading: 'Satın alma',
-      purchasePlaceholder: 'Adet seçimi ve sepete ekleme bir sonraki adımda eklenecek.',
+      addToCart: 'Sepete ekle',
+      addedToCart: (productName, quantity) => `${productName} sepete eklendi (${quantity} adet).`,
+      addLimited: (productName, added, max) =>
+        `Sepette bu üründen en fazla ${max} adet olabilir. ${productName} için yalnızca ${added} adet eklendi.`,
+      atLimit: (max) => `Sepetinizde bu üründen zaten ${max} adet var; daha fazla eklenemez.`,
+      inCart: (quantity) => `Sepetinizde bu üründen ${quantity} adet var.`,
+      goToCart: 'Sepete git',
       outOfStockTitle: 'Tükendi',
       outOfStockText: 'Bu ürün şu anda stokta yok.',
       detailsHeading: 'Ürün ayrıntıları',

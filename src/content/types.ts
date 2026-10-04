@@ -60,7 +60,12 @@ export interface ProductDetailPageCopy {
   thumbnailLabel: (index: number, total: number, alt: string) => string
   imageAnnouncement: (index: number, total: number) => string
   purchaseHeading: string
-  purchasePlaceholder: string
+  addToCart: string
+  addedToCart: (productName: string, quantity: number) => string
+  addLimited: (productName: string, added: number, max: number) => string
+  atLimit: (max: number) => string
+  inCart: (quantity: number) => string
+  goToCart: string
   outOfStockTitle: string
   outOfStockText: string
   detailsHeading: string
@@ -98,6 +103,12 @@ export interface SiteContent {
   }
   a11y: {
     skipToContent: string
+  }
+  quantity: {
+    label: string
+    decrease: string
+    increase: string
+    range: (min: number, max: number) => string
   }
   cartNotice: {
     message: string
