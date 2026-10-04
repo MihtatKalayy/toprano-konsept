@@ -13,13 +13,14 @@ export const queryKeys = {
 } as const
 
 const maxSearchLength = 100
-const maxLira = 1_000_000
+/** Fiyat filtresinde kabul edilen en yüksek tutar (tam lira) */
+export const maxFilterLira = 1_000_000
 
-/** "250" gibi tam lira değerini kuruşa çevirir; geçersizse null döner. */
-function parseLira(value: string | null): number | null {
+/** "250" gibi tam lira değerini kuruşa çevirir; boş, sayı olmayan, küsuratlı, negatif ya da sınır üstü değerde null döner. */
+export function parseLira(value: string | null): number | null {
   if (value === null || !/^\d{1,7}$/.test(value.trim())) return null
   const lira = Number(value.trim())
-  return lira <= maxLira ? liraToKurus(lira) : null
+  return lira <= maxFilterLira ? liraToKurus(lira) : null
 }
 
 function isSortOption(value: string | null): value is SortOption {

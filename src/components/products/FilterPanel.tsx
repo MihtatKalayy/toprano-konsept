@@ -3,7 +3,8 @@ import { categories } from '../../content/catalog'
 import { site } from '../../content/site'
 import type { CategoryId } from '../../content/types'
 import type { ProductQuery } from '../../lib/catalog'
-import { kurusToWholeLira, liraToKurus } from '../../lib/money'
+import { kurusToWholeLira } from '../../lib/money'
+import { maxFilterLira, parseLira } from '../../lib/productQuery'
 
 interface FilterPanelProps {
   query: ProductQuery
@@ -13,7 +14,6 @@ interface FilterPanelProps {
 const copy = site.pages.products
 
 const toInputValue = (kurus: number | null) => (kurus === null ? '' : String(kurusToWholeLira(kurus)))
-const toKurus = (value: string) => (value.trim() === '' ? null : liraToKurus(Number(value)))
 
 const inputClass =
   'mt-1 block min-h-11 w-full rounded-md border border-antrasit-600 bg-notr px-3 text-antrasit-900'
@@ -70,8 +70,8 @@ function PriceFilter({ minKurus, maxKurus, onChange }: PriceFilterProps) {
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const nextMin = toKurus(min)
-    const nextMax = toKurus(max)
+    const nextMin = parseLira(min)
+    const nextMax = parseLira(max)
     const swap = nextMin !== null && nextMax !== null && nextMin > nextMax
     onChange(swap ? { minKurus: nextMax, maxKurus: nextMin } : { minKurus: nextMin, maxKurus: nextMax })
   }
@@ -87,6 +87,7 @@ function PriceFilter({ minKurus, maxKurus, onChange }: PriceFilterProps) {
               type="number"
               inputMode="numeric"
               min={0}
+              max={maxFilterLira}
               step={1}
               value={min}
               onChange={(event) => setMin(event.target.value)}
@@ -99,6 +100,7 @@ function PriceFilter({ minKurus, maxKurus, onChange }: PriceFilterProps) {
               type="number"
               inputMode="numeric"
               min={0}
+              max={maxFilterLira}
               step={1}
               value={max}
               onChange={(event) => setMax(event.target.value)}
