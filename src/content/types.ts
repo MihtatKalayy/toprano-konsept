@@ -107,6 +107,52 @@ export interface CartPageCopy {
   announceCleared: string
 }
 
+export interface HomeStep {
+  id: 'shaping' | 'glazing' | 'firing'
+  title: string
+  text: string
+  image: ProductImage
+}
+
+export interface HomePageCopy {
+  title: string
+  metaDescription: string
+  hero: {
+    heading: string
+    text: string
+    cta: string
+    image: ProductImage
+  }
+  categories: {
+    heading: string
+    intro: string
+    descriptions: Record<CategoryId, string>
+    productCount: (count: number) => string
+  }
+  featured: {
+    heading: string
+    intro: string
+    viewAll: string
+  }
+  workshop: {
+    heading: string
+    story: string[]
+    stepsHeading: string
+    steps: HomeStep[]
+  }
+  values: {
+    heading: string
+    handmade: { title: string; text: string }
+    packaging: { title: string; text: string }
+    shipping: { title: string; text: (threshold: string, fee: string) => string }
+  }
+  closing: {
+    heading: string
+    text: string
+    cta: string
+  }
+}
+
 export interface SiteContent {
   brand: {
     name: string
@@ -150,7 +196,7 @@ export interface SiteContent {
   /** index.html'deki açıklama ile aynı; ürün dışı sayfalarda kullanılır. */
   defaultMetaDescription: string
   pages: {
-    home: PageCopy
+    home: HomePageCopy
     products: ProductsPageCopy
     productDetail: ProductDetailPageCopy
     cart: CartPageCopy

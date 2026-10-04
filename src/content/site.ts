@@ -59,8 +59,83 @@ export const site: SiteContent = {
   defaultMetaDescription: `${brandName}, el yapımı seramikler satan kurgusal bir atölyenin online mağazası. Bu site bir konsept çalışmadır; gerçek satış yapılmaz.`,
   pages: {
     home: {
-      title: 'Ana sayfa',
-      placeholder: 'Ana sayfa içeriği sonraki adımlarda eklenecek.',
+      title: 'El yapımı seramik atölyesi',
+      metaDescription: `${brandName}: elde şekillendirilen kupa, tabak, vazo ve dekor objeleri sunan kurgusal bir seramik atölyesinin vitrini. Bu site bir konsept çalışmadır; gerçek satış yapılmaz.`,
+      hero: {
+        heading: 'Topraktan elde şekillenen, her gün kullanılacak seramikler',
+        text: 'Her parça çarkta tek tek şekillenir, elle sırlanır ve fırında pişer. Sofranıza ve evinize sıcak, sade ve dayanıklı objeler.',
+        cta: 'Ürünleri keşfet',
+        image: {
+          src: '/images/ana-sayfa/atolye-hero.svg',
+          alt: 'Krem bir zemin üzerinde kiremit sırlı kupa, antrasit kase, krem şeritli büyük kiremit vazo ve tek dallı küçük krem vazo',
+          width: 1200,
+          height: 900,
+        },
+      },
+      categories: {
+        heading: 'Kategoriler',
+        intro: 'Sabah kahvesinden duvardaki son dokunuşa kadar.',
+        descriptions: {
+          'cat-kupa-fincan': 'Günlük kupalar, espresso fincanları ve kulpsuz çay kaseleri.',
+          'cat-tabak-kase': 'Paylaşmak için servis tabakları, derin kaseler ve tatlı tabakları.',
+          'cat-vazo': 'Tek bir dal için küçük vazolardan gövdeli büyük formlara.',
+          'cat-dekor': 'Mumluklar, duvar tabakları ve küçük takı tabakları.',
+        },
+        productCount: (count) => `${count} ürün`,
+      },
+      featured: {
+        heading: 'Öne çıkan ürünler',
+        intro: 'Atölyenin her kategoriden seçtiği parçalar.',
+        viewAll: 'Tüm ürünleri gör',
+      },
+      workshop: {
+        heading: 'Atölyeden',
+        story: [
+          `${brandName}, bir çömlek çarkı ve birkaç torba kille başlayan küçük, kurgusal bir atölye. Amaç hep aynı: elde tutulduğunda iyi hissettiren, her gün gönül rahatlığıyla kullanılacak parçalar yapmak.`,
+          'Seri üretim yerine küçük partiler halinde çalışılır. Bu yüzden her parçanın sır akışı ve dokusu birbirinden biraz farklıdır.',
+        ],
+        stepsHeading: 'Bir parçanın yolculuğu',
+        steps: [
+          {
+            id: 'shaping',
+            title: 'Şekillendirme',
+            text: 'Kil yoğrulur ve çarkta elle şekillendirilir. Kurumaya bırakılan parça, ilk pişirimden önce düzeltilip pürüzleri alınır.',
+            image: { src: '/images/ana-sayfa/surec-sekillendirme.svg', alt: '', width: 600, height: 450 },
+          },
+          {
+            id: 'glazing',
+            title: 'Sırlama',
+            text: 'Her parça sır kabına elle daldırılır. Sırın nerede biteceğine göz ve el karar verir; iki parça hiçbir zaman aynı olmaz.',
+            image: { src: '/images/ana-sayfa/surec-sirlama.svg', alt: '', width: 600, height: 450 },
+          },
+          {
+            id: 'firing',
+            title: 'Fırınlama',
+            text: 'Sırlanan parçalar yüksek ısıda ikinci kez pişirilir. Sır camlaşır, parça günlük kullanıma dayanıklı hale gelir.',
+            image: { src: '/images/ana-sayfa/surec-firinlama.svg', alt: '', width: 600, height: 450 },
+          },
+        ],
+      },
+      values: {
+        heading: `Neden ${brandName}`,
+        handmade: {
+          title: 'El yapımı üretim',
+          text: 'Her parça tek tek elde şekillendirilir ve sırlanır.',
+        },
+        packaging: {
+          title: 'Özenli paketleme',
+          text: 'Kırılmaya karşı geri dönüştürülmüş kâğıtla katman katman sarılır.',
+        },
+        shipping: {
+          title: 'Kargo',
+          text: (threshold, fee) => `${threshold} ve üzeri siparişlerde ücretsiz; altında ${fee}.`,
+        },
+      },
+      closing: {
+        heading: 'Sofranıza bir parça toprak',
+        text: 'Kupalardan vazolara, atölyenin tüm parçalarına göz atın.',
+        cta: 'Ürünleri keşfet',
+      },
     },
     products: {
       title: 'Ürünler',
