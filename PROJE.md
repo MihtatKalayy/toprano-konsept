@@ -166,7 +166,10 @@ Kategori id'leri: `cat-kupa-fincan`, `cat-tabak-kase`, `cat-vazo`, `cat-dekor`. 
 
 Üretim ve kullanım:
 
-- Görseller `scripts/generate-product-images.mjs` ile üretilir (`node scripts/generate-product-images.mjs`). Her ürün için iki görsel vardır: `-1.svg` genel görünüm, `-2.svg` yakın görünüm. Görsel değişirse dosya adı da değiştirilmeli; `/images` altı uzun süre önbelleğe alınabilir.
+- Görseller betiklerle üretilir. Ortak tarz (renk paleti, benek dokusu, gölge, kaide) `scripts/illustration-style.mjs`, ürün çizimleri `scripts/product-drawings.mjs` içindedir.
+  - Ürün görselleri: `node scripts/generate-product-images.mjs`. Her ürün için iki görsel vardır: `-1.svg` genel görünüm, `-2.svg` yakın görünüm.
+  - Ana sayfa görselleri: `node scripts/generate-home-images.mjs`. Hero kompozisyonu ürün çizimlerinden kurulur; üretim sürecinin üç adımı ayrıca çizilir.
+- Görsel değişirse dosya adı da değiştirilmeli; `/images` altı uzun süre önbelleğe alınabilir.
 - Her görselin `width`/`height` değeri (800 × 800) veride tutulur ve `<img>` etiketine yazılır; kart görsel alanı `aspect-square` olduğu için yüklenirken düzen kaymaz.
 - Ürün listesinde ilk 2 kartın görseli hemen, diğerleri tembel (`loading="lazy"`) ve `decoding="async"` ile yüklenir.
 - Her görselin veride açıklayıcı bir alt metni vardır. Ürün kartında ad zaten yazılı olduğundan görsel orada süs niteliğindedir (`alt=""`); alt metinler ürün detay sayfasının galerisinde kullanılır.
@@ -174,6 +177,10 @@ Kategori id'leri: `cat-kupa-fincan`, `cat-tabak-kase`, `cat-vazo`, `cat-dekor`. 
 | Görsel | Kullanıldığı yer | Kaynak | Lisans |
 | ------ | ---------------- | ------ | ------ |
 | Logo işareti ve favicon (sade kâse çizimi) | Header, `public/favicon.svg` | Özgün SVG, bu projede çizildi | Proje ile birlikte |
+| Atölye sahnesi: kupa, kase, büyük vazo ve tek dal vazo | Ana sayfa hero, `public/images/ana-sayfa/atolye-hero.svg` (1200 × 900) | Özgün SVG, `scripts/generate-home-images.mjs` | Proje ile birlikte |
+| Şekillendirme: çarkta kil | Ana sayfa atölye bölümü, `public/images/ana-sayfa/surec-sekillendirme.svg` (600 × 450) | Özgün SVG, `scripts/generate-home-images.mjs` | Proje ile birlikte |
+| Sırlama: sır kabına daldırılan kupa | Ana sayfa atölye bölümü, `public/images/ana-sayfa/surec-sirlama.svg` (600 × 450) | Özgün SVG, `scripts/generate-home-images.mjs` | Proje ile birlikte |
+| Fırınlama: fırın içinde pişen parçalar | Ana sayfa atölye bölümü, `public/images/ana-sayfa/surec-firinlama.svg` (600 × 450) | Özgün SVG, `scripts/generate-home-images.mjs` | Proje ile birlikte |
 | Kiremit Sırlı Kupa: genel ve yakın görünüm | Ürün kartı, ürün detayı | Özgün SVG, `public/images/urunler/kiremit-sirli-kupa-1.svg`, `-2.svg` | Proje ile birlikte |
 | Kum Tanesi Espresso Fincanı (2’li): genel ve yakın görünüm | Ürün kartı, ürün detayı | Özgün SVG, `public/images/urunler/kum-tanesi-espresso-fincani-1.svg`, `-2.svg` | Proje ile birlikte |
 | Kulpsuz Çay Kasesi: genel ve yakın görünüm | Ürün kartı, ürün detayı | Özgün SVG, `public/images/urunler/kulpsuz-cay-kasesi-1.svg`, `-2.svg` | Proje ile birlikte |
@@ -296,6 +303,20 @@ Kurallar ve tutarlar tek yerde, `src/config/shop.ts` içinde, kuruş cinsinden t
 - Bir ürün çıkarılınca odak sonraki ürünün adına gider; son satırsa bir öncekine, sepet boşalırsa sayfa başlığına.
 - Mobilde satırlar kart düzenindedir. Geniş ekranda (1024 px ve üstü) liste solda, özet sağda sabit durur.
 
+## Ana Sayfa
+
+Bölümler, yukarıdan aşağıya:
+
+1. **Hero:** ana başlık (sayfadaki tek `h1`), kısa metin, "Ürünleri keşfet" butonu ve atölye sahnesi illüstrasyonu. Görsel öncelikli yüklenir (`fetchpriority="high"`, 1200 × 900, 4:3 alan). Mobilde metin üstte, 768 px ve üstünde yan yana.
+2. **Kategoriler:** 4 kart. Kategoriler ürün kaynağındaki listeden id ile gelir; yalnızca kısa açıklamalar içerik kaynağında, kategori id'siyle eşleşir. Kart görseli kategorinin ilk önerilen ürününün yakın görünümüdür; ürün sayısı veriden hesaplanır (`getCategoryShowcase`). Her kart Ürünler sayfasını o kategoriyle filtreli açar.
+3. **Öne çıkan ürünler:** veride öne çıkan işaretli ürünlerden en fazla 4 tanesi (`getFeaturedProducts`). Ürün kartı bileşeni Ürünler sayfasıyla ortaktır. Altında "Tüm ürünleri gör" bağlantısı vardır.
+4. **Atölye:** kurgusal atölyenin kısa hikâyesi ve üretimin üç adımı (şekillendirme, sırlama, fırınlama). Her adımda illüstrasyon, başlık ve kısa metin var.
+5. **Değerler şeridi:** el yapımı üretim, özenli paketleme ve kargo. Kargo metnindeki tutarlar sepetle aynı yapılandırmadan (`src/config/shop.ts`) okunur.
+6. **Kapanış çağrısı:** kısa bir cümle ve Ürünler'e giden buton.
+
+- Sekme başlığı "El yapımı seramik atölyesi | Toprana"; açıklama meta etiketinde "konsept çalışma" ifadesi geçer.
+- Uydurma yorum, puan, satış iddiası, indirim, geri sayım, otomatik dönen slider veya veri toplayan form yoktur.
+
 ## Adres Yapısı
 
 Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
@@ -347,9 +368,12 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
 ├── public/
 │   ├── favicon.svg
 │   ├── fonts/               # Kendi sunucumuzdan sunulan woff2 dosyaları ve OFL lisansları
-│   └── images/urunler/      # Özgün SVG ürün illüstrasyonları
+│   └── images/              # Özgün SVG illüstrasyonlar: urunler/ ve ana-sayfa/
 ├── scripts/
-│   └── generate-product-images.mjs  # Ürün illüstrasyonlarını üretir
+│   ├── illustration-style.mjs       # İllüstrasyonların ortak tarzı
+│   ├── product-drawings.mjs         # Ürün çizimleri
+│   ├── generate-product-images.mjs  # Ürün illüstrasyonlarını üretir
+│   └── generate-home-images.mjs     # Ana sayfa illüstrasyonlarını üretir
 └── src/
     ├── main.tsx             # Giriş noktası
     ├── router.tsx           # Sayfa yönlendirme tanımı
@@ -366,6 +390,7 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
     │   ├── products/        # ProductCard, StockBadge, FilterPanel, ProductToolbar, ActiveFilters
     │   ├── product-detail/  # ProductDetail, ProductGallery, StockStatus, Breadcrumb, AddToCart
     │   ├── cart/            # QuantityInput, CartLineItem, CartSummary, ClearCartDialog, CartNotice
+    │   ├── home/            # HomeHero, CategoryGrid, FeaturedProducts, WorkshopSection, ValuesStrip, ClosingCta
     │   └── PagePlaceholder.tsx
     ├── hooks/               # usePageMeta, useProductQuery
     ├── pages/               # Her adres için bir sayfa bileşeni
