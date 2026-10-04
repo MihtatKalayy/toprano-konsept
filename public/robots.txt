@@ -1,0 +1,7 @@
+# Toprana konsept sitesi.
+# Tüm sayfalar taranabilir; Sepet, Sipariş ve 404 sayfaları dizine eklenmesin diye
+# sayfanın kendisinde <meta name="robots" content="noindex"> taşır. Bu etiketin okunabilmesi için
+# bu sayfalar burada engellenmez.
+# Yayın adresi belli olunca site haritası satırı eklenecek: Sitemap: https://<adres>/sitemap.xml
+User-agent: *
+Allow: /
