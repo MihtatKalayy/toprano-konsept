@@ -51,6 +51,25 @@ export interface ProductsPageCopy {
   stockLabels: Record<StockStatus, string>
 }
 
+export interface ProductDetailPageCopy {
+  metaDescription: (name: string, shortDescription: string) => string
+  breadcrumbLabel: string
+  homeCrumb: string
+  productsCrumb: string
+  galleryLabel: (productName: string) => string
+  thumbnailLabel: (index: number, total: number, alt: string) => string
+  imageAnnouncement: (index: number, total: number) => string
+  purchaseHeading: string
+  purchasePlaceholder: string
+  outOfStockTitle: string
+  outOfStockText: string
+  detailsHeading: string
+  specsHeading: string
+  specLabels: Record<keyof ProductSpecs, string>
+  handmadeNote: string
+  relatedHeading: string
+}
+
 export interface SiteContent {
   brand: {
     name: string
@@ -86,9 +105,7 @@ export interface SiteContent {
   pages: {
     home: PageCopy
     products: ProductsPageCopy
-    productDetail: {
-      placeholder: string
-    }
+    productDetail: ProductDetailPageCopy
     cart: PageCopy
     checkout: PageCopy
     notFound: PageCopy & {

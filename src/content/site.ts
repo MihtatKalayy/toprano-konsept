@@ -87,7 +87,29 @@ export const site: SiteContent = {
       },
     },
     productDetail: {
-      placeholder: 'Ürün detayı sonraki adımda eklenecek.',
+      metaDescription: (name, shortDescription) =>
+        `${name}: ${shortDescription} ${brandName} konsept çalışmasıdır; gerçek satış yapılmaz.`,
+      breadcrumbLabel: 'Yol göstergesi',
+      homeCrumb: 'Ana sayfa',
+      productsCrumb: 'Ürünler',
+      galleryLabel: (productName) => `${productName} görselleri`,
+      thumbnailLabel: (index, total, alt) => `Görsel ${index} / ${total}: ${alt}`,
+      imageAnnouncement: (index, total) => `Görsel ${index} / ${total} gösteriliyor`,
+      purchaseHeading: 'Satın alma',
+      purchasePlaceholder: 'Adet seçimi ve sepete ekleme bir sonraki adımda eklenecek.',
+      outOfStockTitle: 'Tükendi',
+      outOfStockText: 'Bu ürün şu anda stokta yok.',
+      detailsHeading: 'Ürün ayrıntıları',
+      specsHeading: 'Özellikler',
+      specLabels: {
+        dimensions: 'Ölçü',
+        capacity: 'Hacim',
+        weight: 'Ağırlık',
+        care: 'Bakım',
+      },
+      handmadeNote:
+        'Her parça elde şekillendirilip sırlandığı için renk, sır akışı ve ölçülerde küçük farklılıklar olabilir. Bu farklar el işçiliğinin doğal bir parçasıdır.',
+      relatedHeading: 'Benzer ürünler',
     },
     cart: {
       title: 'Sepet',
