@@ -25,4 +25,5 @@ npm run build      # tip kontrolü + üretim build'i (dist/)
 npm run preview    # üretim build'ini yerelde önizle (http://localhost:4173)
 npm run lint       # ESLint
 npm run typecheck  # yalnızca TypeScript tip kontrolü
+npm test           # birim testleri (Vitest)
 ```
