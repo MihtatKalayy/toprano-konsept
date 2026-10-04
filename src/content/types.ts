@@ -224,6 +224,14 @@ export interface SiteContent {
   }
   a11y: {
     skipToContent: string
+    pageLoading: string
+  }
+  routeError: {
+    title: string
+    metaDescription: string
+    description: string
+    reload: string
+    backHome: string
   }
   quantity: {
     label: string

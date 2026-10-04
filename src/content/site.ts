@@ -44,6 +44,14 @@ export const site: SiteContent = {
   },
   a11y: {
     skipToContent: 'İçeriğe geç',
+    pageLoading: 'Sayfa yükleniyor',
+  },
+  routeError: {
+    title: 'Sayfa yüklenemedi',
+    metaDescription: `${brandName} konsept mağazasında sayfa yüklenemedi.`,
+    description: 'Bir sorun nedeniyle bu sayfa açılamadı. Bağlantınızı kontrol edip sayfayı yenileyebilir ya da ana sayfaya dönebilirsiniz.',
+    reload: 'Sayfayı yenile',
+    backHome: 'Ana sayfaya dön',
   },
   quantity: {
     label: 'Adet',

@@ -113,3 +113,15 @@
     }
   }
 }
+
+/* Sayfa geçişindeki yükleniyor çubuğu: kısa geçişlerde hiç görünmesin diye 200 ms gecikmeyle belirir. */
+.sayfa-yukleniyor {
+  opacity: 0;
+  animation: sayfa-yukleniyor-belir 0s linear 200ms forwards;
+}
+
+@keyframes sayfa-yukleniyor-belir {
+  to {
+    opacity: 1;
+  }
+}
