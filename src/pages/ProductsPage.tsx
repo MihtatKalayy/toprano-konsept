@@ -5,7 +5,7 @@ import { ProductCard } from '../components/products/ProductCard'
 import { ProductToolbar } from '../components/products/ProductToolbar'
 import { categories, products } from '../content/catalog'
 import { site } from '../content/site'
-import { usePageTitle } from '../hooks/usePageTitle'
+import { usePageMeta } from '../hooks/usePageMeta'
 import { useProductQuery } from '../hooks/useProductQuery'
 import { emptyFilters, findCategory, queryProducts } from '../lib/catalog'
 
@@ -14,7 +14,7 @@ const copy = site.pages.products
 const eagerImageCount = 2
 
 export function ProductsPage() {
-  usePageTitle(copy.title)
+  usePageMeta(copy.title)
   const { query, updateQuery } = useProductQuery()
   const results = useMemo(() => queryProducts(products, categories, query), [query])
   const [filtersOpen, setFiltersOpen] = useState(false)

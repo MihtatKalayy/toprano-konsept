@@ -9,9 +9,11 @@ interface ProductCardProps {
   category: Category | undefined
   /** İlk ekranda görünen kartların görselleri beklemeden yüklenir. */
   eager: boolean
+  /** Sayfanın başlık sırasına uyması için; Ürünler sayfasında h2, detay sayfasındaki benzer ürünlerde h3. */
+  headingLevel?: 'h2' | 'h3'
 }
 
-export function ProductCard({ product, category, eager }: ProductCardProps) {
+export function ProductCard({ product, category, eager, headingLevel: Heading = 'h2' }: ProductCardProps) {
   const [image] = product.images
 
   return (
@@ -35,7 +37,7 @@ export function ProductCard({ product, category, eager }: ProductCardProps) {
         <StockBadge stock={product.stock} className="absolute top-2 left-2" />
       </div>
       <div className="flex flex-1 flex-col px-1 pt-3">
-        <h2 className="text-base leading-snug font-semibold group-hover:text-kiremit-700 sm:text-lg">{product.name}</h2>
+        <Heading className="text-base leading-snug font-semibold group-hover:text-kiremit-700 sm:text-lg">{product.name}</Heading>
         {category && <p className="mt-1 text-sm text-antrasit-600">{category.name}</p>}
         <p className="mt-auto pt-2 font-semibold text-antrasit-900">{formatPrice(product.priceKurus)}</p>
       </div>

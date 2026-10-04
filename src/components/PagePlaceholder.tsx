@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { usePageTitle } from '../hooks/usePageTitle'
+import { usePageMeta } from '../hooks/usePageMeta'
 
 interface PagePlaceholderProps {
   title: string
@@ -9,7 +9,7 @@ interface PagePlaceholderProps {
 
 // Sayfaların gerçek içeriği gelene kadar kullanılan ortak yer tutucu.
 export function PagePlaceholder({ title, description, children }: PagePlaceholderProps) {
-  usePageTitle(title)
+  usePageMeta(title)
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
