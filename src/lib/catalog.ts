@@ -76,3 +76,29 @@ export function getRelatedProducts(products: Product[], product: Product, limit 
   const sameCategory = products.filter((other) => other.categoryId === product.categoryId && other.id !== product.id)
   return sortProducts(sameCategory, 'onerilen').slice(0, limit)
 }
+
+/** Ana sayfadaki öne çıkan ürünler: öne çıkan işaretli ürünlerden, kaynak sırasıyla en fazla `limit` tanesi. */
+export function getFeaturedProducts(products: Product[], limit = 4): Product[] {
+  return sortProducts(
+    products.filter((product) => product.featured),
+    'onerilen',
+  ).slice(0, limit)
+}
+
+export interface CategoryShowcase {
+  category: Category
+  productCount: number
+  /** Kategoriyi temsil eden ürün: kategorideki ilk önerilen ürün */
+  coverProduct: Product | undefined
+}
+
+/** Ana sayfadaki kategori kartları için kategori listesini ürün sayısı ve kapak ürünüyle eşleştirir (id ile). */
+export function getCategoryShowcase(categories: Category[], products: Product[]): CategoryShowcase[] {
+  return categories.map((category) => {
+    const inCategory = sortProducts(
+      products.filter((product) => product.categoryId === category.id),
+      'onerilen',
+    )
+    return { category, productCount: inCategory.length, coverProduct: inCategory[0] }
+  })
+}

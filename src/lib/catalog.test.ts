@@ -5,6 +5,8 @@ import {
   emptyFilters,
   filterProducts,
   findProductBySlug,
+  getCategoryShowcase,
+  getFeaturedProducts,
   getRelatedProducts,
   hasActiveFilters,
   queryProducts,
@@ -138,5 +140,41 @@ describe('getRelatedProducts', () => {
     const base = product('p-001')
     const twin = { ...base, id: 'p-999', slug: 'ikiz' }
     expect(ids(getRelatedProducts([...products, twin], base))).toContain('p-999')
+  })
+})
+
+describe('getFeaturedProducts', () => {
+  it('yalnızca öne çıkan ürünleri, en fazla 4 tane döndürür', () => {
+    const featured = getFeaturedProducts(products)
+    expect(featured.length).toBeLessThanOrEqual(4)
+    expect(featured.every((product) => product.featured)).toBe(true)
+    expect(ids(featured)).toEqual(['p-001', 'p-004', 'p-007', 'p-011'])
+  })
+
+  it('sınırı uygular ve öne çıkan yoksa boş döner', () => {
+    const many = products.map((product) => ({ ...product, featured: true }))
+    expect(getFeaturedProducts(many)).toHaveLength(4)
+    expect(getFeaturedProducts(many, 2)).toHaveLength(2)
+    expect(getFeaturedProducts(products.map((product) => ({ ...product, featured: false })))).toEqual([])
+  })
+})
+
+describe('getCategoryShowcase', () => {
+  it('kaynak sırasıyla tüm kategorileri, ürün sayısı ve kapak ürünüyle döndürür', () => {
+    const showcase = getCategoryShowcase(categories, products)
+    expect(showcase.map((item) => item.category.id)).toEqual(categories.map((category) => category.id))
+    expect(showcase.map((item) => item.productCount)).toEqual([3, 3, 3, 3])
+    expect(showcase.map((item) => item.coverProduct?.id)).toEqual(['p-001', 'p-004', 'p-007', 'p-011'])
+  })
+
+  it('kapak ürünü her zaman kendi kategorisinden gelir', () => {
+    for (const item of getCategoryShowcase(categories, products)) {
+      expect(item.coverProduct?.categoryId).toBe(item.category.id)
+    }
+  })
+
+  it('ürünü olmayan kategoride kapak yoktur', () => {
+    const [item] = getCategoryShowcase(categories.slice(0, 1), [])
+    expect(item).toEqual({ category: categories[0], productCount: 0, coverProduct: undefined })
   })
 })
