@@ -94,7 +94,7 @@ Projenin asıl amacı, portföyü inceleyen potansiyel müşterilere etkileşiml
 ### Sepet
 
 - Sepet **yalnızca ürün id'si ve adedi** tutar. Ad, fiyat ve görsel her zaman ürün kaynağından okunur.
-- Sepet tarayıcı depolamasında **sürüm numaralı bir anahtarla** saklanır. Yapı değişirse sürüm artar; eski veri güvenli şekilde dönüştürülür veya temizlenir.
+- Sepet tarayıcı depolamasında **sürüm numaralı bir yapıyla** saklanır (anahtar `toprana.sepet`, içinde `version` alanı). Yapı değişirse sürüm artar; eski veri güvenli şekilde dönüştürülür veya temizlenir. Ayrıntılar: **Sepet** bölümü.
 - Bozuk veya tanınmayan veri uygulamayı çökertmez.
 - Sepeti **okuyan** ve **değiştiren** işlemler ayrı tutulur; her değişiklik **tek adımda** uygulanır.
 
@@ -244,6 +244,58 @@ Tüm metin/zemin çiftleri AA (normal metin için 4.5:1) eşiğini geçer.
 | `kiremit-300` | `antrasit-900` | 6.63 | AA |
 | Odak çizgisi `kiremit-600` | `krem` | 4.93 | Arayüz öğesi için gereken 3:1'in üstünde |
 
+## Sepet
+
+### Kurallar
+
+Kurallar ve tutarlar tek yerde, `src/config/shop.ts` içinde, kuruş cinsinden tam sayı olarak tutulur.
+
+| Kural | Değer |
+| ----- | ----- |
+| Kargo ücreti | ₺75 (`shippingFeeKurus: 7500`) |
+| Ücretsiz kargo eşiği | Ara toplam ₺1.500 **veya üzeri** (`freeShippingThresholdKurus: 150000`); ₺1.499,99 ve altı ücretli |
+| Boş sepette kargo | ₺0 |
+| Ürün başına adet | En az 1, en fazla 10 |
+
+- Tükenen ürün ve ürün kaynağında olmayan id sepete eklenemez. Eşleştirme her zaman ürün id'si ile yapılır.
+- Aynı ürün tekrar eklenince yeni satır açılmaz, adet artar. Sepetteki adetle birlikte 10 aşılacaksa yalnızca sığan kadarı eklenir.
+- Satır toplamı, ara toplam, kargo, genel toplam ve toplam adet `src/lib/cart.ts` içindeki saf işlevlerle hesaplanır. Her işlem yeni bir sepet döndürür; mevcut veri yerinde değiştirilmez.
+
+### Saklama yapısı (sürüm 1)
+
+`localStorage` içinde `toprana.sepet` anahtarı altında:
+
+```json
+{ "version": 1, "lines": [{ "productId": "p-001", "quantity": 2 }] }
+```
+
+- Yalnızca ürün id'si ve adet yazılır. Ad, fiyat, görsel ve stok her zaman ürün kaynağından okunur; kişisel veri yazılmaz.
+- Okurken doğrulama (`src/lib/cartStorage.ts`, `parseStoredCart`):
+  - bozuk JSON, beklenmeyen biçim ve tanınmayan sürüm → boş sepet;
+  - bilinmeyen ürün id'si, artık tükenmiş ürün, geçersiz satır ve geçersiz adet → o satır ayıklanır;
+  - sınır dışı ya da küsuratlı adet → 1–10 aralığına çekilir; aynı ürünün yinelenen satırları birleştirilir.
+- Bir şey ayıklandıysa düzeltilmiş sepet depolamaya geri yazılır, durum `console.warn` ile loga yazılır ve sayfanın üstünde kapatılabilir kısa bir bilgi gösterilir.
+- Depolamaya erişilemiyorsa (gizli sekme kısıtı, kota dolu vb.) sepet o oturum boyunca bellekte çalışmaya devam eder; sebep loga yazılır.
+- Başka bir sekmede sepet değişirse `storage` olayıyla bu sekme de güncellenir.
+- Yapı değişirse `cartStorageVersion` artırılır ve `parseStoredCart` eski sürümü yeni yapıya dönüştürür. Dönüştürülemeyen sürüm temizlenir.
+
+### Durum paylaşımı
+
+- `src/cart/cartStore.ts`: sepeti tutan küçük depo. Her değişiklik tek adımda hesaplanır, kaydedilir ve dinleyicilere bildirilir.
+- `CartProvider` depoyu React bağlamıyla (context) paylaşır. Ek bir kütüphane kullanılmaz; React'in `useSyncExternalStore` aracı kullanılır.
+- Okuma ve değiştirme ayrıdır:
+  - `useCart()` satırları ürün kaynağıyla birleştirilmiş, toplamları hesaplanmış olarak okur;
+  - `useCartActions()` yalnızca değiştirme işlevlerini verir.
+
+### Sepet sayfası
+
+- Her satırda görsel, detay sayfasına bağlantılı ürün adı, birim fiyat, adet seçimi, satır toplamı ve "Çıkar" var.
+- Özette ara toplam, kargo ve genel toplam ile ücretsiz kargoya kalan tutar ya da kazanıldı bilgisi yer alır. "Siparişi tamamla" `/siparis`'e, "Alışverişe devam et" `/urunler`'e gider.
+- "Sepeti boşalt" tarayıcının yerleşik `<dialog>` penceresiyle onay ister.
+- Toplamlar değişince ekran okuyucuya duyurulur.
+- Bir ürün çıkarılınca odak sonraki ürünün adına gider; son satırsa bir öncekine, sepet boşalırsa sayfa başlığına.
+- Mobilde satırlar kart düzenindedir. Geniş ekranda (1024 px ve üstü) liste solda, özet sağda sabit durur.
+
 ## Adres Yapısı
 
 Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
@@ -265,7 +317,7 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
 - Yol göstergesi: Ana sayfa › Ürünler › Kategori › Ürün adı. Kategori bağlantısı Ürünler sayfasını o kategoriyle filtreli açar (örn. `/urunler?kategori=vazo`).
 - Galeri: ana görsel öncelikli yüklenir (`fetchpriority="high"`, boyutlu, kare alan). Küçük görseller fare, dokunma ve klavyeyle seçilir. Klavyede şerit tek sekme durağıdır; oklar, Home ve End ile gezinilir. Seçili görsel çerçeveyle ve `aria-current` ile belirtilir, değişim ekran okuyucuya duyurulur. Üründe tek görsel varsa şerit gösterilmez.
 - Stok durumu her zaman metin ve simgeyle gösterilir; renk tek başına bilgi taşımaz.
-- Satın alma alanı: adet seçimi ve "Sepete ekle" butonu Sepet adımında gelecek. Şimdilik bu alanda yalnızca bilgi notu var, çalışmayan buton yok. Tükenen üründe bu alanda "Tükendi" kutusu görünür.
+- Satın alma alanı: adet seçimi (azalt / artır / doğrudan yazma, 1–10) ve "Sepete ekle" butonu. Ekleme sonrası görünür ve ekran okuyucuya duyurulan bir onay ile "Sepete git" bağlantısı gösterilir. Sepetteki adetle birlikte 10 aşılacaksa yalnızca sığan kadarı eklenir ve bu açıkça yazılır. Tükenen üründe buton yerine "Tükendi" kutusu görünür.
 - Ayrıntılar: uzun açıklama, el yapımı ürünlerdeki küçük farklılıklara dair not ve özellikler listesi (ölçü, hacim, ağırlık, bakım).
 - Benzer ürünler: aynı kategoriden, ürünün kendisi hariç, önerilen sırayla en fazla 4 ürün (`getRelatedProducts`). Kart bileşeni Ürünler sayfasıyla ortaktır. Her kategoride 3 ürün olduğundan şu an her detayda 2 benzer ürün görünür.
 
@@ -302,14 +354,18 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
     ├── main.tsx             # Giriş noktası
     ├── router.tsx           # Sayfa yönlendirme tanımı
     ├── routes/paths.ts      # Adres sabitleri
+    ├── config/shop.ts       # Mağaza kuralları: kargo ücreti, ücretsiz kargo eşiği, adet sınırları (kuruş)
+    ├── cart/                # Sepet deposu (cartStore), CartProvider, useCart / useCartActions
     ├── content/             # Tek içerik kaynağı: site metinleri (site.ts), ürün ve kategori verisi (catalog.ts), tipler (types.ts)
     ├── lib/                 # Arayüzden bağımsız saf işlevler ve birim testleri (*.test.ts):
     │                        #   money (kuruş → ₺), search (Türkçe duyarsız arama),
-    │                        #   catalog (filtre, sıralama), productQuery (adres parametreleri)
+    │                        #   catalog (filtre, sıralama), productQuery (adres parametreleri),
+    │                        #   cart (sepet işlemleri ve hesaplar), cartStorage (saklama ve doğrulama)
     ├── components/
     │   ├── layout/          # RootLayout, Header, Footer
     │   ├── products/        # ProductCard, StockBadge, FilterPanel, ProductToolbar, ActiveFilters
-    │   ├── product-detail/  # ProductDetail, ProductGallery, StockStatus, Breadcrumb
+    │   ├── product-detail/  # ProductDetail, ProductGallery, StockStatus, Breadcrumb, AddToCart
+    │   ├── cart/            # QuantityInput, CartLineItem, CartSummary, ClearCartDialog, CartNotice
     │   └── PagePlaceholder.tsx
     ├── hooks/               # usePageMeta, useProductQuery
     ├── pages/               # Her adres için bir sayfa bileşeni
