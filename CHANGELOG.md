@@ -6,6 +6,14 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 
 ### Eklendi
 
+- Sipariş adımı (Yol haritası adım 7):
+  - Konsept bilgi kutusu; teslimat formu (ad soyad, telefon, e-posta, 81 ilden seçim, ilçe, açık adres, posta kodu, not, örnek bilgilendirme onayı); ödeme yerine kısa bilgi.
+  - Yalnızca ön yüzde doğrulama: alan altında Türkçe hata mesajları, `aria-describedby` ilişkisi ve gönderimde ilk hatalı alana odak.
+  - Sepet hesaplarından gelen sipariş özeti ve "Sepeti düzenle"; boş sepette boş durum.
+  - Ağ isteği yapmayan gönderim ve çift tıklama koruması.
+  - Onay ekranı (`/siparis/onay`): teşekkür, konsept notu, özet; sepet boşalır, odak başlığa taşınır. Yenileme ya da doğrudan erişimde ana sayfaya yönlenir.
+- 81 il listesi (`src/content/provinces.ts`, plaka kodlarıyla).
+- Sipariş formu doğrulama işlevleri (`src/lib/checkoutValidation.ts`) ve birim testleri.
 - Ana sayfa (Yol haritası adım 6):
   - hero (başlık, metin, "Ürünleri keşfet", öncelikli yüklenen illüstrasyon);
   - ürün kaynağından gelen 4 kategori kartı (filtreli Ürünler sayfasına gider);

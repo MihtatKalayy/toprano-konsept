@@ -236,7 +236,86 @@ export const site: SiteContent = {
     },
     checkout: {
       title: 'Sipariş',
-      placeholder: 'Sipariş adımı sonraki adımlarda eklenecek.',
+      conceptNotice:
+        'Bu site bir konsept çalışmadır. Gerçek sipariş oluşturulmaz, ödeme alınmaz; girdiğiniz bilgiler hiçbir yere gönderilmez ve kaydedilmez.',
+      deliveryHeading: 'Teslimat bilgileri',
+      optional: '(isteğe bağlı)',
+      fields: {
+        fullName: {
+          label: 'Ad soyad',
+          errors: { required: 'Lütfen adınızı ve soyadınızı yazın.', invalid: 'Adınızı ve soyadınızı aralarında boşluk bırakarak yazın.' },
+        },
+        phone: {
+          label: 'Telefon',
+          hint: 'Örn. 0532 123 45 67',
+          errors: {
+            required: 'Lütfen telefon numaranızı yazın.',
+            invalid: 'Telefon numarası geçersiz. 0 ile başlayan 11 haneli ya da +90 ile başlayan bir numara yazın.',
+          },
+        },
+        email: {
+          label: 'E-posta',
+          hint: 'Örn. ad@ornek.com',
+          errors: { required: 'Lütfen e-posta adresinizi yazın.', invalid: 'E-posta adresi geçersiz. ad@ornek.com biçiminde yazın.' },
+        },
+        provinceCode: {
+          label: 'İl',
+          errors: { required: 'Lütfen bir il seçin.', invalid: 'Lütfen listeden bir il seçin.' },
+        },
+        district: {
+          label: 'İlçe',
+          errors: { required: 'Lütfen ilçeyi yazın.', invalid: 'İlçe adı en az 2 karakter olmalı.' },
+        },
+        address: {
+          label: 'Açık adres',
+          hint: 'Mahalle, sokak, bina ve daire numarası',
+          errors: { required: 'Lütfen açık adresinizi yazın.', invalid: 'Adres çok kısa; en az 10 karakter olmalı.' },
+        },
+        postalCode: {
+          label: 'Posta kodu',
+          hint: '5 haneli, örn. 35000',
+          errors: { invalid: 'Posta kodu 5 haneli olmalı ve 01–81 arasında bir il koduyla başlamalı.' },
+        },
+        note: {
+          label: 'Sipariş notu',
+          errors: { invalid: 'Sipariş notu en fazla 500 karakter olabilir.' },
+        },
+        consent: {
+          label: 'Bilgilendirme metnini okudum.',
+          errors: { required: 'Devam etmek için bilgilendirme metnini okuduğunuzu onaylayın.' },
+        },
+      },
+      provincePlaceholder: 'İl seçin',
+      consentHeading: 'Bilgilendirme metni (örnek metin)',
+      consentText:
+        'Bu bir örnek metindir. Konsept sitede girilen bilgiler yalnızca formun doğrulanması için tarayıcıda kullanılır; hiçbir yere gönderilmez ve saklanmaz.',
+      paymentHeading: 'Ödeme',
+      paymentText: 'Ödeme adımı konsept sitede yer almaz.',
+      submit: 'Siparişi onayla',
+      errorSummary: (count) => (count === 1 ? 'Formda düzeltilmesi gereken 1 alan var.' : `Formda düzeltilmesi gereken ${count} alan var.`),
+      summary: {
+        heading: 'Sipariş özeti',
+        itemsToggle: (count) => `Ürünleri göster (${count} ürün)`,
+        quantity: (count) => `${count} adet`,
+        subtotal: 'Ara toplam',
+        shipping: 'Kargo',
+        freeShipping: 'Ücretsiz',
+        total: 'Genel toplam',
+        editCart: 'Sepeti düzenle',
+      },
+      empty: {
+        title: 'Sepetiniz boş',
+        text: 'Sipariş verebilmek için önce sepetinize ürün ekleyin.',
+        cta: 'Ürünlere göz at',
+      },
+      confirmation: {
+        title: 'Sipariş onayı',
+        heading: 'Teşekkürler!',
+        conceptNote:
+          'Bu site bir konsept çalışma olduğu için gerçek bir sipariş oluşturulmadı ve ödeme alınmadı. Girdiğiniz bilgiler hiçbir yere gönderilmedi ve kaydedilmedi; sepetiniz boşaltıldı.',
+        summaryHeading: 'Sipariş özeti',
+        continueShopping: 'Alışverişe devam et',
+      },
     },
     notFound: {
       title: 'Sayfa bulunamadı',

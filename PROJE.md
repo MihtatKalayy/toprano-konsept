@@ -317,6 +317,52 @@ Bölümler, yukarıdan aşağıya:
 - Sekme başlığı "El yapımı seramik atölyesi | Toprana"; açıklama meta etiketinde "konsept çalışma" ifadesi geçer.
 - Uydurma yorum, puan, satış iddiası, indirim, geri sayım, otomatik dönen slider veya veri toplayan form yoktur.
 
+## Sipariş
+
+### Akış
+
+1. **Sepet:** "Siparişi tamamla" → `/siparis`.
+2. **Sipariş sayfası:**
+   - Üstte konsept bilgi kutusu.
+   - Geniş ekranda (1024 px ve üstü) solda teslimat formu, sağda sipariş özeti. Mobilde önce kısa özet (toplamlar ve açılır ürün listesi), sonra form.
+   - Sepet boşsa form gösterilmez; boş durum ve Ürünler bağlantısı gösterilir.
+3. **Geçerli gönderim:**
+   - Hiçbir ağ isteği yapılmaz.
+   - Yalnızca ürün satırları ve toplamlar, bellekte tek kullanımlık bir kayda (`src/checkout/confirmation.ts`) konur ve `/siparis/onay` açılır.
+4. **Onay ekranı:**
+   - Teşekkür başlığı, konsept notu, sipariş özeti ve "Alışverişe devam et". Sipariş numarası üretilmez.
+   - Ekran açılınca kayıt silinir, sepet boşaltılır (header rozeti kaybolur) ve odak başlığa taşınır.
+   - Kayıt yalnızca bellekte olduğu için sayfa yenilendiğinde, onay adresi doğrudan açıldığında ya da geri/ileri ile dönüldüğünde onay gösterilmez; ana sayfaya yönlenilir.
+
+### Teslimat formu
+
+| Alan | Zorunlu | Kural | Klavye / otomatik doldurma |
+| ---- | ------- | ----- | -------------------------- |
+| Ad soyad | Evet | En az 3 karakter, en az iki kelime | `autocomplete="name"` |
+| Telefon | Evet | Türkiye numarası: `0532 123 45 67`, `+90 532 123 45 67`, `0090…`, `532…`, `(0212) …`; boşluk, tire, nokta ve parantez yok sayılır. Ulusal 10 hane; 2–5 veya 8 ile başlar | `type="tel"`, `autocomplete="tel"` |
+| E-posta | Evet | `ad@alan.uzantı`, uzantı en az 2 karakter, en fazla 254 karakter | `type="email"`, `autocomplete="email"` |
+| İl | Evet | 81 ilden biri (`src/content/provinces.ts`, plaka kodlarıyla; değer koddur) | `autocomplete="shipping address-level1"` |
+| İlçe | Evet | En az 2 karakter | `autocomplete="shipping address-level2"` |
+| Açık adres | Evet | En az 10 karakter | `autocomplete="shipping street-address"` |
+| Posta kodu | Hayır | 5 hane, ilk iki hane 01–81 | `inputmode="numeric"`, `autocomplete="shipping postal-code"` |
+| Sipariş notu | Hayır | En fazla 500 karakter | — |
+| Bilgilendirme onayı | Evet | İşaretli olmalı (metin "örnek metin" olarak belirtilir) | — |
+
+- Kurallar `src/lib/checkoutValidation.ts` içinde saf işlevlerdir ve birim testleri vardır. Hata türleri (`required` / `invalid`) koddur; mesajlar içerik kaynağındadır.
+- Hatalar ilk gönderim denemesinden sonra gösterilir ve yazdıkça güncellenir. Her hata mesajı alanın altında durur ve `aria-describedby` ile alana bağlıdır; hatalı alan `aria-invalid` taşır.
+- Gönderimde hata varsa odak ilk hatalı alana gider ve formun altında hatalı alan sayısı yazılır.
+- Çift tıklama ya da art arda Enter siparişi iki kez işlemez; gönder butonu ilk geçerli gönderimde devre dışı kalır.
+- Ödeme bölümünde yalnızca "Ödeme adımı konsept sitede yer almaz." bilgisi vardır. Kart, son kullanma tarihi, güvenlik kodu, IBAN, kupon, üyelik veya fatura alanı yoktur.
+
+### Kişisel veri
+
+- Form değerleri yalnızca form bileşeninin belleğinde tutulur. Depolamaya, adres çubuğuna, tarayıcı geçmişi durumuna (`history.state`) veya loga yazılmaz; hiçbir yere gönderilmez. Onay ekranına yalnızca ürünler ve toplamlar aktarılır.
+- Tarayıcının kendi otomatik doldurma özelliği, kullanıcının izniyle değerleri tarayıcıda saklayabilir; bu sitenin denetiminde değildir.
+
+### Bilinen sınırlar
+
+- Chromium tabanlı tarayıcılarda yerleşik il listesinde harf yazarak arama "İ" ile başlayan illeri (İstanbul, İzmir) küçük "i" ile bulmuyor; ok tuşlarıyla ya da büyük "I" yazarak seçilebiliyor. Mobilde sistem seçicisi kullanıldığından etkilenmez.
+
 ## Adres Yapısı
 
 Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
@@ -327,7 +373,8 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
 | `/urunler` | Ürünler; filtre, arama ve sıralama sorgu parametrelerinde (aşağıda) |
 | `/urunler/:slug` | Ürün detayı (örn. `/urunler/tek-dal-vazo`); veride olmayan slug 404 gösterir |
 | `/sepet` | Sepet |
-| `/siparis` | Sipariş |
+| `/siparis` | Sipariş: teslimat formu ve sipariş özeti |
+| `/siparis/onay` | Sipariş onayı; yalnızca geçerli gönderimden hemen sonra gösterilir, aksi halde ana sayfaya yönlenir |
 | Diğer tüm adresler | 404 — Sayfa bulunamadı |
 
 - Sayfa değişince görünüm en üste kayar (geri/ileri gezinmede önceki konum korunur), sekme başlığı `Sayfa adı | Toprana` biçiminde ve açıklama meta etiketi sayfaya göre güncellenir (`usePageMeta`). Ürün detayında başlık ürün adı, açıklama ürünün kısa açıklamasıdır; diğer sayfalarda `index.html` ile aynı varsayılan açıklama kullanılır.
@@ -380,17 +427,20 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
     ├── routes/paths.ts      # Adres sabitleri
     ├── config/shop.ts       # Mağaza kuralları: kargo ücreti, ücretsiz kargo eşiği, adet sınırları (kuruş)
     ├── cart/                # Sepet deposu (cartStore), CartProvider, useCart / useCartActions
-    ├── content/             # Tek içerik kaynağı: site metinleri (site.ts), ürün ve kategori verisi (catalog.ts), tipler (types.ts)
+    ├── checkout/            # Onay ekranı için bellekteki tek kullanımlık kayıt
+    ├── content/             # Tek içerik kaynağı: site metinleri (site.ts), ürün ve kategori verisi (catalog.ts), 81 il (provinces.ts), tipler (types.ts)
     ├── lib/                 # Arayüzden bağımsız saf işlevler ve birim testleri (*.test.ts):
     │                        #   money (kuruş → ₺), search (Türkçe duyarsız arama),
     │                        #   catalog (filtre, sıralama), productQuery (adres parametreleri),
-    │                        #   cart (sepet işlemleri ve hesaplar), cartStorage (saklama ve doğrulama)
+    │                        #   cart (sepet işlemleri ve hesaplar), cartStorage (saklama ve doğrulama),
+    │                        #   checkoutValidation (sipariş formu kuralları)
     ├── components/
     │   ├── layout/          # RootLayout, Header, Footer
     │   ├── products/        # ProductCard, StockBadge, FilterPanel, ProductToolbar, ActiveFilters
     │   ├── product-detail/  # ProductDetail, ProductGallery, StockStatus, Breadcrumb, AddToCart
     │   ├── cart/            # QuantityInput, CartLineItem, CartSummary, ClearCartDialog, CartNotice
     │   ├── home/            # HomeHero, CategoryGrid, FeaturedProducts, WorkshopSection, ValuesStrip, ClosingCta
+    │   ├── checkout/        # DeliveryForm, OrderSummary
     │   └── PagePlaceholder.tsx
     ├── hooks/               # usePageMeta, useProductQuery
     ├── pages/               # Her adres için bir sayfa bileşeni

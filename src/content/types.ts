@@ -1,4 +1,5 @@
 import type { SortOption } from '../lib/catalog'
+import type { DeliveryField, FieldError } from '../lib/checkoutValidation'
 
 export type NavItemId = 'home' | 'products'
 
@@ -153,6 +154,49 @@ export interface HomePageCopy {
   }
 }
 
+export interface FieldCopy {
+  label: string
+  hint?: string
+  errors: Partial<Record<FieldError, string>>
+}
+
+export interface CheckoutPageCopy {
+  title: string
+  conceptNotice: string
+  deliveryHeading: string
+  optional: string
+  fields: Record<DeliveryField, FieldCopy>
+  provincePlaceholder: string
+  consentHeading: string
+  consentText: string
+  paymentHeading: string
+  paymentText: string
+  submit: string
+  errorSummary: (count: number) => string
+  summary: {
+    heading: string
+    itemsToggle: (count: number) => string
+    quantity: (count: number) => string
+    subtotal: string
+    shipping: string
+    freeShipping: string
+    total: string
+    editCart: string
+  }
+  empty: {
+    title: string
+    text: string
+    cta: string
+  }
+  confirmation: {
+    title: string
+    heading: string
+    conceptNote: string
+    summaryHeading: string
+    continueShopping: string
+  }
+}
+
 export interface SiteContent {
   brand: {
     name: string
@@ -200,7 +244,7 @@ export interface SiteContent {
     products: ProductsPageCopy
     productDetail: ProductDetailPageCopy
     cart: CartPageCopy
-    checkout: PageCopy
+    checkout: CheckoutPageCopy
     notFound: PageCopy & {
       backHome: string
     }

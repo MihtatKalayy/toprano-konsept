@@ -4,6 +4,7 @@ export const paths = {
   productDetail: '/urunler/:slug',
   cart: '/sepet',
   checkout: '/siparis',
+  checkoutConfirmation: '/siparis/onay',
 } as const
 
 export function productPath(slug: string): string {
