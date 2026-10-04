@@ -56,9 +56,7 @@ export const site: SiteContent = {
       placeholder: 'Ürün listesi, filtreler ve arama sonraki adımlarda eklenecek.',
     },
     productDetail: {
-      title: 'Ürün detayı',
-      placeholder: 'Ürün detayı sonraki adımlarda eklenecek.',
-      slugLabel: 'İstenen ürün adresi:',
+      placeholder: 'Ürün detayı sonraki adımda eklenecek.',
     },
     cart: {
       title: 'Sepet',

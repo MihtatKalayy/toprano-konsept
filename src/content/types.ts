@@ -56,8 +56,8 @@ export interface SiteContent {
   pages: {
     home: PageCopy
     products: PageCopy
-    productDetail: PageCopy & {
-      slugLabel: string
+    productDetail: {
+      placeholder: string
     }
     cart: PageCopy
     checkout: PageCopy
