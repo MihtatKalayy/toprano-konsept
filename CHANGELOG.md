@@ -6,6 +6,14 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 
 ### Eklendi
 
+- Cila, erişilebilirlik, SEO ve performans (Yol haritası adım 8):
+  - Sayfa bazlı kod bölme; ilk açılışta yer tutucu, sayfa geçişlerinde gecikmeli ilerleme çubuğu ve ekran okuyucu metni.
+  - Sayfa parçası yüklenemezse header ve footer'lı hata sayfası ("Sayfayı yenile").
+  - Sayfa değişiminde odağın ana içeriğe taşınması ve yeni sayfa başlığının duyurulması.
+  - Her sayfaya özgü açıklama meta etiketi; Sepet, Sipariş, onay, 404 ve hata sayfasında `noindex`.
+  - Open Graph ve Twitter kart etiketleri, 1200 × 630 paylaşım görseli, `robots.txt`.
+  - `netlify.toml`: güvenlik başlıkları (X-Content-Type-Options, Referrer-Policy, X-Frame-Options, Permissions-Policy), `index.html` için önbelleksiz yanıt, görseller için bir günlük önbellek.
+  - Lighthouse mobil ölçümleri, paket boyutları ve denetim bulguları `PROJE.md`'de.
 - Sipariş adımı (Yol haritası adım 7):
   - Konsept bilgi kutusu; teslimat formu (ad soyad, telefon, e-posta, 81 ilden seçim, ilçe, açık adres, posta kodu, not, örnek bilgilendirme onayı); ödeme yerine kısa bilgi.
   - Yalnızca ön yüzde doğrulama: alan altında Türkçe hata mesajları, `aria-describedby` ilişkisi ve gönderimde ilk hatalı alana odak.
@@ -58,8 +66,19 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 - `PROJE.md`: konsept özeti, stack, MVP kapsamı, kapsam dışı maddeler, mimari kararlar ve yol haritası (Yol haritası adım 1: dokümanlar).
 - `CHANGELOG.md`: değişiklik günlüğü.
 
+### Düzeltildi
+
+- Fiyat filtresine çok büyük bir sayı yazılınca yakalanmayan hata.
+- Footer'da odak çizgisinin koyu zeminde yetersiz kontrastı (artık krem).
+- 44 px'ten küçük dokunma hedefleri: footer "Sepet" bağlantısı, yol göstergesindeki kısa kategori adları, Sepet satırı ürün adları, sipariş onay kutusu.
+
 ### Değişti
 
+- Sipariş ve onay sayfaları aynı parçada paketlenir; geçerli gönderimde ağ isteği yapılmaz.
+- `index.html` başlık ve açıklaması ana sayfanınkiyle aynı.
+- 404 sayfası yer tutucu bileşen olmadan; `PagePlaceholder` ve kullanılmayan `defaultMetaDescription` kaldırıldı.
+- `formatPrice` tam sayı aritmetiğiyle lira hesaplar.
+- `usePageMeta` açıklamayı zorunlu alır ve isteğe bağlı `noindex` seçeneği taşır.
 - İllüstrasyon betiği ortak tarz (`scripts/illustration-style.mjs`) ve ürün çizimleri (`scripts/product-drawings.mjs`) olarak ayrıldı; ürün görsellerinin çıktısı bayt bayt aynı kaldı.
 - Ana sayfa yer tutucusu ve ona ait içerik metni kaldırıldı.
 - `Header`: sabit 0 yerine sepetteki toplam adet kullanılır.

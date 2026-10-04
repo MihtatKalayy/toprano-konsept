@@ -250,6 +250,7 @@ Tüm metin/zemin çiftleri AA (normal metin için 4.5:1) eşiğini geçer.
 | `krem-200` | `antrasit-900` | 11.67 | AAA |
 | `kiremit-300` | `antrasit-900` | 6.63 | AA |
 | Odak çizgisi `kiremit-600` | `krem` | 4.93 | Arayüz öğesi için gereken 3:1'in üstünde |
+| Odak çizgisi `krem` (yalnızca footer) | `antrasit-900` | 13.20 | Koyu zeminde vurgu rengi 2,68:1 kaldığı için footer'da odak çizgisi krem |
 
 ## Sepet
 
@@ -404,7 +405,84 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
 - Arama ürün adı, kategori adı ve kısa açıklamada yapılır. Büyük/küçük harf ve Türkçe karakter farklarına duyarsızdır (`FİNCAN` = `fincan` = `FINCAN`, `corba` = `çorba`). Aranan her kelime metindeki bir kelimenin başıyla eşleşmelidir: `kase`, "Kasesi"yi bulur; `nar`, "kenarlı"yı bulmaz.
 - Önerilen sıralama: öne çıkan ürünler önce, sonra veri kaynağındaki sıra.
 
-- Netlify'da tüm adresler `index.html`'e yönlendirilir (`netlify.toml`); 404 sayfasını uygulama gösterir. Bu nedenle bilinmeyen adresler HTTP 200 ile döner.
+- Netlify'da tüm adresler `index.html`'e yönlendirilir (`netlify.toml`); 404 sayfasını uygulama gösterir. Bu nedenle bilinmeyen adresler HTTP 200 ile döner. 404 sayfası `noindex` taşır.
+- Sepet, Sipariş, sipariş onayı, 404 ve hata sayfası `<meta name="robots" content="noindex">` ile arama motorlarına kapalıdır. `robots.txt` bu sayfaları engellemez; engellerse arama motoru `noindex` etiketini okuyamaz.
+- Her sayfanın kendine özgü başlığı ve açıklama meta etiketi vardır (`usePageMeta`). `index.html` başlık ve açıklaması ana sayfanınkiyle aynıdır ve Open Graph / Twitter kart etiketlerini (paylaşım görseli: `public/og/toprana-paylasim.png`, 1200 × 630) taşır.
+- Canonical bağlantı ve site haritası, yayın adresi belli olmadığı için henüz eklenmedi (bkz. Kalite Denetimi > Açık konular).
+- Kurgusal ürünler ve marka için yapılandırılmış veri (Product, Offer, Organization, LocalBusiness) bilerek eklenmez.
+
+## Kalite Denetimi ve Lighthouse
+
+### Ölçüm koşulları
+
+- Lighthouse 13.5.0, varsayılan **mobil** profil: Moto G Power emülasyonu, simüle yavaş 4G ve 4× CPU yavaşlatma.
+- Hedef: `npm run build` + `vite preview` (yerel, sıkıştırmalı). Netlify'ın CDN'i, HTTP/2 ve önbellek başlıkları ölçüme dahil değil.
+- Sepet ve Sipariş, sepette iki ürün (Kiremit Sırlı Kupa ×2, Tek Dal Vazo ×1) varken ölçüldü.
+- Her sayfa 3 kez ölçüldü; tabloda ortanca değerler var. Lighthouse bu projeye bağımlılık olarak eklenmedi; tek seferlik çalıştırıldı.
+
+### Puanlar (Performance / Accessibility / Best Practices / SEO)
+
+| Sayfa | Önce | Sonra | LCP (sonra) | CLS |
+| ----- | ---- | ----- | ----------- | --- |
+| Ana sayfa | 97 / 100 / 100 / 92 | 97 / 100 / 100 / 100 | 2,3 sn | 0 |
+| Ürünler | 100 / 100 / 100 / 92 | 100 / 100 / 100 / 100 | 1,2 sn | 0 |
+| Ürün detayı (`/urunler/kiremit-sirli-kupa`) | 100 / 100 / 100 / 92 | 100 / 100 / 100 / 100 | 1,2 sn | 0 |
+| Sepet | 100 / 100 / 100 / 91 | 100 / 100 / 100 / **63** | 1,2 sn | 0 |
+| Sipariş | 100 / 100 / 100 / 91 | 100 / 100 / 100 / **63** | 1,2 sn | 0 |
+
+- Önceki SEO kaybı: `robots.txt` yoktu. SPA yönlendirmesi bu adreste HTML döndürüyordu.
+- Sepet ve Sipariş'teki SEO 63 **beklenen** bir sonuç: bu sayfalar bilerek `noindex` taşıyor ve Lighthouse "sayfa dizine eklenebilir" denetimini başarısız sayıyor. Diğer SEO denetimleri bu sayfalarda da geçiyor.
+- Ana sayfanın LCP öğesi hero illüstrasyonu. Görsel, sayfa parçası çalıştıktan sonra keşfediliyor; puan 97–98 aralığında.
+
+### Paket boyutları (`npm run build`, sıkıştırılmamış / gzip)
+
+| Dosya | Boyut | Ne zaman yüklenir |
+| ----- | ----- | ----------------- |
+| `index-*.js` (React, React Router, içerik, sepet) | 354,4 KB / 112,7 KB | Her sayfada |
+| `index-*.css` | 31,8 KB / 6,7 KB | Her sayfada |
+| `HomePage` | 6,9 KB / 2,0 KB | Ana sayfa |
+| `ProductsPage` | 7,9 KB / 2,5 KB | Ürünler |
+| `ProductDetailPage` | 8,2 KB / 2,9 KB | Ürün detayı |
+| `CartPage` | 7,8 KB / 2,4 KB | Sepet |
+| `checkoutRoutes` (Sipariş + onay) | 13,8 KB / 4,4 KB | Sipariş |
+| `NotFoundPage` | 0,6 KB / 0,4 KB | 404 |
+| Ortak küçük parçalar (`ProductCard`, `QuantityInput`, `money`) | 0,6–4,1 KB | Gerektiğinde |
+
+Kod bölmeden önce tek dosya 391 KB idi; şimdi her sayfa ana dosya + kendi parçasıyla 356–361 KB yükler. Ana dosyanın büyük kısmı React ve React Router'dır.
+
+### Denetim bulguları
+
+**Critical:** yok.
+
+**High (düzeltildi)**
+1. Fiyat filtresine çok büyük bir sayı (örn. 20 haneli) yazılınca `liraToKurus` hata fırlatıyor ve hata yakalanmıyordu. Artık adres parametreleriyle aynı `parseLira` işlevi kullanılıyor; geçersiz değer yok sayılıyor ve kutularda `max` sınırı var.
+2. Footer'daki bağlantıların odak çizgisi koyu zeminde 2,68:1 kontrasttaydı (gerekli 3:1). Footer'da odak çizgisi artık krem (13,2:1).
+3. Sayfa değişiminde odak taşınmıyor, yeni sayfa duyurulmuyordu. Artık odak ana içeriğe gidiyor ve sayfa başlığı canlı bölgeyle duyuruluyor. Sayfa odağı kendisi yönetiyorsa (sipariş onayı) dokunulmuyor; filtre değişiminde odak yerinde kalıyor.
+
+**Medium (düzeltildi)**
+1. 44 px'ten küçük dokunma hedefleri: footer'daki "Sepet" bağlantısı, yol göstergesindeki kısa kategori adları, Sepet satırlarındaki ürün adı bağlantısı (23 px yükseklik) ve siparişteki onay kutusu (24 px). Onay kutusunun etiketi artık kutuyu sarıyor.
+2. Sayfa bazlı kod bölme yoktu. Her sayfa artık ayrı parça; ilk açılışta yer tutucu, geçişlerde 200 ms gecikmeli ilerleme çubuğu ve ekran okuyucu metni var.
+3. Sayfa parçası yüklenemezse (örn. yeni yayından sonra eski dosya) ham hata ekranı çıkacaktı. Artık header ve footer'lı bir hata sayfası gösteriliyor; "Sayfayı yenile" seçeneği var ve hata loga yazılıyor.
+4. Ürünler, Sepet, Sipariş ve 404 aynı varsayılan açıklamayı kullanıyordu; her sayfaya özgü açıklama eklendi. Paylaşım etiketleri ve `robots.txt` yoktu.
+5. Sipariş onayı ayrı parça olsaydı geçerli gönderimde bir ağ isteği (JS parçası) yapılacaktı. Sipariş ve onay aynı parçada paketlendi.
+
+**Low (düzeltildi)**
+1. 404 sayfası "yer tutucu" adlı bir bileşen ve `placeholder` alanı kullanıyordu. Bileşen kaldırıldı, alan `description` oldu.
+2. `formatPrice` lirayı `Math.trunc(kuruş / 100)` ile buluyordu; tam sayı aritmetiğine çevrildi (sonuç aynı).
+3. Kullanılmayan `defaultMetaDescription` içerik alanı kaldırıldı.
+
+**Low (açık, öneri)**
+1. `useCart` her çağrıda satırları ve özeti hesaplıyor; sepete bağlı her bileşen (header rozeti, kayıt düzeltme bilgisi, sepete ekle) sepet değişince yeniden çiziliyor. Sayfa içeriği yeniden çizilmiyor (doğrulandı). Gerekirse yalnızca `issues` ya da toplam adedi okuyan seçici kancalar eklenebilir.
+2. Ana parçanın ~48 KB'ı açılışta kullanılmıyor; büyük kısmı React Router. Kütüphane değişmeden azaltılamaz.
+3. Hero görseli, sayfa parçası çalıştıktan sonra keşfediliyor. Yalnızca ana sayfada geçerli bir ön yükleme, sunucu tarafı çizim olmadan yapılamaz.
+4. Chromium'un yerleşik il listesinde harfle arama küçük "i" ile İstanbul/İzmir'i bulmuyor (bkz. Sipariş > Bilinen sınırlar).
+5. `kiremit-500` belirteci yalnızca dekoratif amaçla tanımlı; şu an kullanılmıyor.
+
+### Açık konular (karar bekleyen)
+
+- **Yayın adresi:** Canonical bağlantı, site haritası (`/`, `/urunler` ve 12 ürün detayı) ve `og:image` / `og:url` için tam adres gerekiyor; adres belli olunca eklenecek.
+- **Content-Security-Policy:** Eklenmedi; onay bekliyor. Uygulama satır içi betik, satır içi stil ve dış kaynak kullanmadığı için `default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'` gibi sıkı bir politika uygun görünüyor; eklenmeden önce tüm sayfalarda denenmeli.
+- Netlify başlıkları (`netlify.toml`) yerelde doğrulanamadı; ilk yayında yanıt başlıkları kontrol edilmeli.
 
 ## Klasör Düzeni
 
@@ -414,6 +492,8 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
 ├── netlify.toml             # Build, Node sürümü, SPA yönlendirmesi, önbellek başlıkları
 ├── public/
 │   ├── favicon.svg
+│   ├── robots.txt
+│   ├── og/                  # Paylaşım görseli (1200 × 630 PNG)
 │   ├── fonts/               # Kendi sunucumuzdan sunulan woff2 dosyaları ve OFL lisansları
 │   └── images/              # Özgün SVG illüstrasyonlar: urunler/ ve ana-sayfa/
 ├── scripts/
@@ -435,15 +515,14 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
     │                        #   cart (sepet işlemleri ve hesaplar), cartStorage (saklama ve doğrulama),
     │                        #   checkoutValidation (sipariş formu kuralları)
     ├── components/
-    │   ├── layout/          # RootLayout, Header, Footer
+    │   ├── layout/          # RootLayout (odak ve duyuru, yükleniyor çubuğu), AppShell, PageLoadingFallback, Header, Footer
     │   ├── products/        # ProductCard, StockBadge, FilterPanel, ProductToolbar, ActiveFilters
     │   ├── product-detail/  # ProductDetail, ProductGallery, StockStatus, Breadcrumb, AddToCart
     │   ├── cart/            # QuantityInput, CartLineItem, CartSummary, ClearCartDialog, CartNotice
     │   ├── home/            # HomeHero, CategoryGrid, FeaturedProducts, WorkshopSection, ValuesStrip, ClosingCta
     │   ├── checkout/        # DeliveryForm, OrderSummary
-    │   └── PagePlaceholder.tsx
     ├── hooks/               # usePageMeta, useProductQuery
-    ├── pages/               # Her adres için bir sayfa bileşeni
+    ├── pages/               # Her adres için bir sayfa bileşeni (her biri ayrı parça); RouteErrorPage, checkoutRoutes (sipariş + onay aynı parçada)
     └── styles/index.css     # Tailwind teması: tasarım belirteçleri ve @font-face
 ```
 
