@@ -46,6 +46,7 @@ export const site: SiteContent = {
     skipToContent: 'İçeriğe geç',
   },
   pageTitle: (pageTitle) => `${pageTitle} | ${brandName}`,
+  defaultMetaDescription: `${brandName}, el yapımı seramikler satan kurgusal bir atölyenin online mağazası. Bu site bir konsept çalışmadır; gerçek satış yapılmaz.`,
   pages: {
     home: {
       title: 'Ana sayfa',
