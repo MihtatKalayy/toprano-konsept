@@ -98,6 +98,11 @@
     @apply outline-2 outline-offset-2 outline-vurgu;
   }
 
+  /* Koyu zeminde (footer) vurgu rengi yeterli kontrast vermez; odak çizgisi krem olur (13,2:1). */
+  footer :focus-visible {
+    @apply outline-krem;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
