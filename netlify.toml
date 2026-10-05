@@ -6,6 +6,76 @@
   # Vite 8 için Node 20.19+ yeterli; React Router 8 ise Node 22.22+ istiyor.
   NODE_VERSION = "22"
 
+# Var olmayan dosya adresleri HTML yerine gerçek 404 döner. Aksi halde aşağıdaki SPA kuralı bunlara
+# 200 ile index.html verir; tarayıcılar, arama motorları ve ajanlar (örn. Lighthouse) HTML'i dosya sanar.
+# Bu kurallar `force` olmadan yazıldığı için yalnızca diskte o dosya yoksa uygulanır: ileride
+# llms.txt, sitemap.xml gibi bir dosya eklenirse dosyanın kendisi sunulur. Gövde: /404.txt (düz metin).
+# Sıra önemli: ilk eşleşen kural uygulanır; bu yüzden SPA kuralından önce gelirler.
+[[redirects]]
+  from = "/.well-known/*"
+  to = "/404.txt"
+  status = 404
+
+[[redirects]]
+  from = "/ai-catalog.json"
+  to = "/404.txt"
+  status = 404
+
+# Yayın adresi belli olunca llms.txt eklenecek; o zamana kadar 404.
+[[redirects]]
+  from = "/llms.txt"
+  to = "/404.txt"
+  status = 404
+
+[[redirects]]
+  from = "/llms-full.txt"
+  to = "/404.txt"
+  status = 404
+
+# Site haritası yayın adresi belli olunca eklenecek; o zamana kadar 404.
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/404.txt"
+  status = 404
+
+# Sitenin simgesi /favicon.svg'dir; tarayıcıların kendiliğinden istediği diğer simge adresleri 404 döner.
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/404.txt"
+  status = 404
+
+[[redirects]]
+  from = "/apple-touch-icon.png"
+  to = "/404.txt"
+  status = 404
+
+[[redirects]]
+  from = "/apple-touch-icon-precomposed.png"
+  to = "/404.txt"
+  status = 404
+
+# Statik dosya klasörlerinde olmayan bir dosya (örn. yeni yayından sonra eski bir JS parçası) 404 döner;
+# uygulama bunu yakalayıp "Sayfa yüklenemedi" ekranını gösterir.
+[[redirects]]
+  from = "/assets/*"
+  to = "/404.txt"
+  status = 404
+
+[[redirects]]
+  from = "/fonts/*"
+  to = "/404.txt"
+  status = 404
+
+[[redirects]]
+  from = "/images/*"
+  to = "/404.txt"
+  status = 404
+
+[[redirects]]
+  from = "/og/*"
+  to = "/404.txt"
+  status = 404
+
 # Tek sayfa uygulaması: diskte karşılığı olmayan tüm adresler index.html'e düşer,
 # yönlendirmeyi ve 404 sayfasını React Router üstlenir. robots.txt, /assets, /fonts gibi
 # gerçek dosyalar bu kuraldan etkilenmez (Netlify varsayılanı: önce dosya).
@@ -22,6 +92,17 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "DENY"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()"
+
+# Düz metin dosyaları Türkçe karakter içerdiği için karakter kümesiyle sunulur.
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/404.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
 
 # index.html her seferinde sunucuya sorulsun; yeni yayın hemen görünsün.
 # SPA yönlendirmesiyle gelen diğer adresler için Netlify zaten "max-age=0, must-revalidate" kullanır.
