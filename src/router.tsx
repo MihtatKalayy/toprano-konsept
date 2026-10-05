@@ -1,25 +1,26 @@
 import { createBrowserRouter } from 'react-router'
+import { PageLoadingFallback } from './components/layout/PageLoadingFallback'
 import { RootLayout } from './components/layout/RootLayout'
-import { CartPage } from './pages/CartPage'
-import { CheckoutConfirmationPage } from './pages/CheckoutConfirmationPage'
-import { CheckoutPage } from './pages/CheckoutPage'
-import { HomePage } from './pages/HomePage'
-import { NotFoundPage } from './pages/NotFoundPage'
-import { ProductDetailPage } from './pages/ProductDetailPage'
-import { ProductsPage } from './pages/ProductsPage'
+import { RouteErrorPage } from './pages/RouteErrorPage'
 import { paths } from './routes/paths'
 
+// Her sayfa ayrı bir parça olarak, yalnızca o sayfa açıldığında yüklenir.
 export const router = createBrowserRouter([
   {
-    element: <RootLayout />,
+    Component: RootLayout,
+    HydrateFallback: PageLoadingFallback,
+    ErrorBoundary: RouteErrorPage,
     children: [
-      { path: paths.home, element: <HomePage /> },
-      { path: paths.products, element: <ProductsPage /> },
-      { path: paths.productDetail, element: <ProductDetailPage /> },
-      { path: paths.cart, element: <CartPage /> },
-      { path: paths.checkout, element: <CheckoutPage /> },
-      { path: paths.checkoutConfirmation, element: <CheckoutConfirmationPage /> },
-      { path: '*', element: <NotFoundPage /> },
+      { path: paths.home, lazy: async () => ({ Component: (await import('./pages/HomePage')).HomePage }) },
+      { path: paths.products, lazy: async () => ({ Component: (await import('./pages/ProductsPage')).ProductsPage }) },
+      { path: paths.productDetail, lazy: async () => ({ Component: (await import('./pages/ProductDetailPage')).ProductDetailPage }) },
+      { path: paths.cart, lazy: async () => ({ Component: (await import('./pages/CartPage')).CartPage }) },
+      { path: paths.checkout, lazy: async () => ({ Component: (await import('./pages/checkoutRoutes')).CheckoutPage }) },
+      {
+        path: paths.checkoutConfirmation,
+        lazy: async () => ({ Component: (await import('./pages/checkoutRoutes')).CheckoutConfirmationPage }),
+      },
+      { path: '*', lazy: async () => ({ Component: (await import('./pages/NotFoundPage')).NotFoundPage }) },
     ],
   },
 ])

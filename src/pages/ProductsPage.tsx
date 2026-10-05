@@ -14,7 +14,7 @@ const copy = site.pages.products
 const eagerImageCount = 2
 
 export function ProductsPage() {
-  usePageMeta(copy.title)
+  usePageMeta(copy.title, copy.metaDescription)
   const { query, updateQuery } = useProductQuery()
   const results = useMemo(() => queryProducts(products, categories, query), [query])
   const [filtersOpen, setFiltersOpen] = useState(false)

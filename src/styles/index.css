@@ -98,6 +98,11 @@
     @apply outline-2 outline-offset-2 outline-vurgu;
   }
 
+  /* Koyu zeminde (footer) vurgu rengi yeterli kontrast vermez; odak çizgisi krem olur (13,2:1). */
+  footer :focus-visible {
+    @apply outline-krem;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -106,5 +111,17 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* Sayfa geçişindeki yükleniyor çubuğu: kısa geçişlerde hiç görünmesin diye 200 ms gecikmeyle belirir. */
+.sayfa-yukleniyor {
+  opacity: 0;
+  animation: sayfa-yukleniyor-belir 0s linear 200ms forwards;
+}
+
+@keyframes sayfa-yukleniyor-belir {
+  to {
+    opacity: 1;
   }
 }

@@ -21,13 +21,9 @@ export interface ContactInfo {
   address: string
 }
 
-export interface PageCopy {
-  title: string
-  placeholder: string
-}
-
 export interface ProductsPageCopy {
   title: string
+  metaDescription: string
   intro: string
   filtersHeading: string
   filtersToggle: (activeCount: number) => string
@@ -78,6 +74,7 @@ export interface ProductDetailPageCopy {
 
 export interface CartPageCopy {
   title: string
+  metaDescription: string
   emptyTitle: string
   emptyText: string
   browseProducts: string
@@ -162,6 +159,7 @@ export interface FieldCopy {
 
 export interface CheckoutPageCopy {
   title: string
+  metaDescription: string
   conceptNotice: string
   deliveryHeading: string
   optional: string
@@ -190,6 +188,7 @@ export interface CheckoutPageCopy {
   }
   confirmation: {
     title: string
+    metaDescription: string
     heading: string
     conceptNote: string
     summaryHeading: string
@@ -225,6 +224,14 @@ export interface SiteContent {
   }
   a11y: {
     skipToContent: string
+    pageLoading: string
+  }
+  routeError: {
+    title: string
+    metaDescription: string
+    description: string
+    reload: string
+    backHome: string
   }
   quantity: {
     label: string
@@ -237,15 +244,16 @@ export interface SiteContent {
     dismiss: string
   }
   pageTitle: (pageTitle: string) => string
-  /** index.html'deki açıklama ile aynı; ürün dışı sayfalarda kullanılır. */
-  defaultMetaDescription: string
   pages: {
     home: HomePageCopy
     products: ProductsPageCopy
     productDetail: ProductDetailPageCopy
     cart: CartPageCopy
     checkout: CheckoutPageCopy
-    notFound: PageCopy & {
+    notFound: {
+      title: string
+      metaDescription: string
+      description: string
       backHome: string
     }
   }

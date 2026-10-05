@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { categories } from '../content/catalog'
 import { defaultSort } from './catalog'
-import { parseProductQuery, productsPathForCategory, toSearchParams } from './productQuery'
+import { parseLira, parseProductQuery, productsPathForCategory, toSearchParams } from './productQuery'
 
 const parse = (search: string) => parseProductQuery(new URLSearchParams(search), categories)
 
@@ -64,6 +64,20 @@ describe('productsPathForCategory', () => {
     for (const category of categories) {
       const search = productsPathForCategory(category, categories).split('?')[1]
       expect(parseProductQuery(new URLSearchParams(search), categories).categoryIds).toEqual([category.id])
+    }
+  })
+})
+
+describe('parseLira', () => {
+  it('tam lirayı kuruşa çevirir', () => {
+    expect(parseLira('250')).toBe(25000)
+    expect(parseLira(' 0 ')).toBe(0)
+    expect(parseLira('1000000')).toBe(100_000_000)
+  })
+
+  it('geçersiz girdide hata fırlatmadan null döner', () => {
+    for (const value of [null, '', ' ', 'abc', '-5', '12.5', '1e3', '1000001', '100000000000000000000']) {
+      expect(parseLira(value)).toBeNull()
     }
   })
 })

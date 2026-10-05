@@ -23,8 +23,8 @@ function assertKurus(kurus: number): void {
  */
 export function formatPrice(kurus: number): string {
   assertKurus(kurus)
-  const lira = Math.trunc(kurus / 100)
   const rest = kurus % 100
+  const lira = (kurus - rest) / 100
   if (rest === 0) return wholeLira.format(`${lira}`)
   return withKurus.format(`${lira}.${String(rest).padStart(2, '0')}` as Intl.StringNumericLiteral)
 }

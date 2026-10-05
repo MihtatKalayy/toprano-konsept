@@ -1,38 +1,40 @@
-import { useRef, type MouseEvent } from 'react'
-import { Outlet, ScrollRestoration } from 'react-router'
+import { useEffect, useRef } from 'react'
+import { Outlet, ScrollRestoration, useLocation, useNavigation } from 'react-router'
 import { site } from '../../content/site'
-import { CartNotice } from '../cart/CartNotice'
-import { Footer } from './Footer'
-import { Header } from './Header'
-
-const mainId = 'icerik'
+import { AppShell } from './AppShell'
 
 export function RootLayout() {
   const mainRef = useRef<HTMLElement>(null)
+  const announcerRef = useRef<HTMLParagraphElement>(null)
+  const { pathname } = useLocation()
+  const previousPath = useRef(pathname)
+  const loading = useNavigation().state === 'loading'
 
-  // Adres çubuğuna # eklemeden odağı ana içeriğe taşır; böylece yönlendirme tetiklenmez.
-  const skipToContent = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault()
-    mainRef.current?.focus()
-    mainRef.current?.scrollIntoView()
-  }
+  // Sayfa değişince odak ana içeriğe taşınır ve yeni sayfanın başlığı ekran okuyucuya duyurulur.
+  // Sayfa odağı kendisi yönettiyse (örn. sipariş onayı başlığı) dokunulmaz. Aynı sayfada filtre değişimi
+  // yalnızca sorgu parametresini değiştirdiği için odak yerinde kalır.
+  useEffect(() => {
+    if (previousPath.current === pathname) return
+    previousPath.current = pathname
+    const main = mainRef.current
+    if (!main) return
+    const active = document.activeElement
+    if (!active || active === document.body || !main.contains(active)) main.focus({ preventScroll: true })
+    if (announcerRef.current) announcerRef.current.textContent = document.title
+  }, [pathname])
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <a
-        href={`#${mainId}`}
-        onClick={skipToContent}
-        className="sr-only z-50 rounded-md bg-vurgu px-4 py-3 font-semibold text-vurgu-metin focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
-      >
-        {site.a11y.skipToContent}
-      </a>
-      <Header />
-      <main id={mainId} ref={mainRef} tabIndex={-1} className="flex-1 scroll-mt-16 focus:outline-none">
-        <CartNotice />
+    <>
+      {/* Sayfa parçası yüklenirken üstte ince bir çubuk; kısa geçişlerde görünmesin diye gecikmeli belirir. */}
+      {loading && <div aria-hidden="true" className="sayfa-yukleniyor fixed inset-x-0 top-0 z-50 h-1 bg-vurgu" />}
+      <p role="status" className="sr-only">
+        {loading ? site.a11y.pageLoading : ''}
+      </p>
+      <p ref={announcerRef} aria-live="polite" aria-atomic="true" className="sr-only" />
+      <AppShell mainRef={mainRef} busy={loading}>
         <Outlet />
-      </main>
-      <Footer />
+      </AppShell>
       <ScrollRestoration />
-    </div>
+    </>
   )
 }

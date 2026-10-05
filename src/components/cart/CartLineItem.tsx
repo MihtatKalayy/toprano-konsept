@@ -30,7 +30,7 @@ export function CartLineItem({ line, nameLinkRef, onQuantityChange, onRemove }: 
 
       <div className="min-w-0">
         <h3 className="text-lg leading-snug font-semibold">
-          <Link ref={nameLinkRef} to={productPath(product.slug)} className="hover:text-kiremit-700 hover:underline">
+          <Link ref={nameLinkRef} to={productPath(product.slug)} className="inline-flex min-h-11 items-center hover:text-kiremit-700 hover:underline">
             {product.name}
           </Link>
         </h3>

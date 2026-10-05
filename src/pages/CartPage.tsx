@@ -29,7 +29,7 @@ function totalsText(cart: Cart): string {
 }
 
 export function CartPage() {
-  usePageMeta(copy.title)
+  usePageMeta(copy.title, copy.metaDescription, { noindex: true })
   const { lines, summary } = useCart()
   const actions = useCartActions()
   const [announcement, setAnnouncement] = useState<Announcement | null>(null)
