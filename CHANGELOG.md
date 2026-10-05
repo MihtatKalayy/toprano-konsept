@@ -6,6 +6,8 @@ Bu projedeki önemli değişiklikler bu dosyada tutulur.
 
 ### Eklendi
 
+- Var olmayan dosya adresleri için gerçek 404 (`netlify.toml`, SPA kuralından önce): `/.well-known/*`, `/ai-catalog.json`, `/llms.txt`, `/llms-full.txt`, `/sitemap.xml`, `/favicon.ico`, Apple dokunma simgeleri ve `/assets`, `/fonts`, `/images`, `/og` altında olmayan dosyalar. Gövde: `public/404.txt`.
+- `robots.txt` ve `404.txt` için `text/plain; charset=utf-8`.
 - Cila, erişilebilirlik, SEO ve performans (Yol haritası adım 8):
   - Sayfa bazlı kod bölme; ilk açılışta yer tutucu, sayfa geçişlerinde gecikmeli ilerleme çubuğu ve ekran okuyucu metni.
   - Sayfa parçası yüklenemezse header ve footer'lı hata sayfası ("Sayfayı yenile").

@@ -407,6 +407,24 @@ Adresler `src/routes/paths.ts` içinde sabit olarak tutulur.
 
 - Netlify'da tüm adresler `index.html`'e yönlendirilir (`netlify.toml`); 404 sayfasını uygulama gösterir. Bu nedenle bilinmeyen adresler HTTP 200 ile döner. 404 sayfası `noindex` taşır.
 - Sepet, Sipariş, sipariş onayı, 404 ve hata sayfası `<meta name="robots" content="noindex">` ile arama motorlarına kapalıdır. `robots.txt` bu sayfaları engellemez; engellerse arama motoru `noindex` etiketini okuyamaz.
+
+### Dosya adresleri ve 404
+
+SPA kuralı (`/*` → `index.html`, 200) diskte karşılığı olmayan her adrese HTML döndürdüğü için, dosya bekleyen istemciler (tarayıcı, arama motoru, Lighthouse gibi ajan denetimleri) HTML'i dosya sanıyordu. `netlify.toml`'da SPA kuralından **önce** gelen kurallar, aşağıdaki adreslerde dosya yoksa düz metin gövdeyle (`/404.txt`) **404** döndürür. Kurallar `force` olmadan yazıldığı için dosya eklendiğinde dosyanın kendisi sunulur.
+
+| Adres | Durum |
+| ----- | ----- |
+| `/robots.txt` | 200, `text/plain; charset=utf-8` |
+| `/favicon.svg` | 200, `image/svg+xml` |
+| `/og/toprana-paylasim.png` | 200, `image/png` |
+| `/llms.txt`, `/llms-full.txt` | 404 (llms.txt yayın adresi belli olunca eklenecek) |
+| `/ai-catalog.json`, `/.well-known/*` (ör. `ai-catalog.json`, `ard.json`, `security.txt`) | 404 (sitenin ajanlara sunduğu bir araç, API veya katalog yok; uydurma dosya eklenmez) |
+| `/sitemap.xml` | 404 (yayın adresi belli olunca eklenecek) |
+| `/favicon.ico`, `/apple-touch-icon.png`, `/apple-touch-icon-precomposed.png` | 404 |
+| `/assets/*`, `/fonts/*`, `/images/*`, `/og/*` altında olmayan dosya | 404 (eski JS parçası istenirse uygulama "Sayfa yüklenemedi" ekranını gösterir) |
+| Uygulama adresleri (`/`, `/urunler`, `/urunler/:slug`, `/sepet`, `/siparis`, bilinmeyen sayfalar) | 200, `index.html`; 404 sayfasını uygulama gösterir |
+
+Kurallar Netlify CLI'nin yerel sunucusuyla (`netlify serve --offline`) doğrulandı; Lighthouse Agentic Browsing kategorisi bu sunucuda 50'den 100'e çıktı (`llms-txt` ve `ard-schema` artık "uygulanamaz").
 - Her sayfanın kendine özgü başlığı ve açıklama meta etiketi vardır (`usePageMeta`). `index.html` başlık ve açıklaması ana sayfanınkiyle aynıdır ve Open Graph / Twitter kart etiketlerini (paylaşım görseli: `public/og/toprana-paylasim.png`, 1200 × 630) taşır.
 - Canonical bağlantı ve site haritası, yayın adresi belli olmadığı için henüz eklenmedi (bkz. Kalite Denetimi > Açık konular).
 - Kurgusal ürünler ve marka için yapılandırılmış veri (Product, Offer, Organization, LocalBusiness) bilerek eklenmez.
@@ -482,7 +500,8 @@ Kod bölmeden önce tek dosya 391 KB idi; şimdi her sayfa ana dosya + kendi par
 
 - **Yayın adresi:** Canonical bağlantı, site haritası (`/`, `/urunler` ve 12 ürün detayı) ve `og:image` / `og:url` için tam adres gerekiyor; adres belli olunca eklenecek.
 - **Content-Security-Policy:** Eklenmedi; onay bekliyor. Uygulama satır içi betik, satır içi stil ve dış kaynak kullanmadığı için `default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'` gibi sıkı bir politika uygun görünüyor; eklenmeden önce tüm sayfalarda denenmeli.
-- Netlify başlıkları (`netlify.toml`) yerelde doğrulanamadı; ilk yayında yanıt başlıkları kontrol edilmeli.
+- **llms.txt:** Yayın adresi gerektiriyor (belirtim bağlantıları tam URL olarak bekler); adres belli olunca kökten sunulacak. O zamana kadar `/llms.txt` 404 döner.
+- Netlify'ın yerel sunucusunda güvenlik başlıkları ve yönlendirme kuralları doğrulandı. `Cache-Control` başlıklarını yerel sunucu kendisi yazdığı için önbellek kuralları yalnızca canlı yayında doğrulanabilir.
 
 ## Klasör Düzeni
 
@@ -493,6 +512,7 @@ Kod bölmeden önce tek dosya 391 KB idi; şimdi her sayfa ana dosya + kendi par
 ├── public/
 │   ├── favicon.svg
 │   ├── robots.txt
+│   ├── 404.txt              # Var olmayan dosya adreslerinin 404 gövdesi (düz metin)
 │   ├── og/                  # Paylaşım görseli (1200 × 630 PNG)
 │   ├── fonts/               # Kendi sunucumuzdan sunulan woff2 dosyaları ve OFL lisansları
 │   └── images/              # Özgün SVG illüstrasyonlar: urunler/ ve ana-sayfa/
